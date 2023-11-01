@@ -184,7 +184,7 @@ export default function JournalForm() {
 										: watchDate
 								}
 								onChange={(date: Date) => {
-									setValue("date", date)
+									setValue("date", date, { shouldDirty: true })
 								}}
 								wrapperClassName="w-full"
 								customInput={
@@ -204,7 +204,7 @@ export default function JournalForm() {
 								loadOptions={loadAccountItemOptions}
 								// options={accounts}
 								onChange={(e: Option | null) => {
-									setValue("account", e)
+									setValue("account", e, { shouldDirty: true })
 								}}
 								value={watch("account")}
 								errors={errors}

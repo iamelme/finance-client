@@ -3,38 +3,58 @@ import { Outlet, useNavigate } from "react-router-dom"
 import { Plus, Edit } from "react-feather"
 
 import useAxios from "../../hooks/useAxios"
-import { bgType, DateFormatter, CurrencyFormatter } from "../../helpers"
+import { DateFormatter, CurrencyFormatter } from "../../helpers"
 import { JournalType } from "../../types"
-import { Button, Card, CardBody } from "../../ui"
+import { Button, Card, CardBody, Pagination } from "../../ui"
 
+export function bgType(type: string) {
+	if (type === "Revenue") return "bg-green-200 text-green-800"
+
+	return "bg-red-200 text-red-800"
+}
 export default function List() {
 	const [journals, setJournals] = useState<JournalType[]>([])
 	const [isLoading, setIsLoading] = useState(true)
 	const [selected, setSelected] = useState<Record<string, boolean>>({})
 
-	const [filter, setFilter] = useState({ limit: 25, offset: 0 })
+	const [filter, setFilter] = useState({ limit: 25, totalItems: 0, offset: 0 })
 	const navigate = useNavigate()
 
+	const searchQuery = new URLSearchParams(window.location.search)
+	const pageQuery = searchQuery.get("page")
+
 	const ax = useAxios()
+	const fetchJournals = async () => {
+		try {
+			const res = await ax.get("/journal", {
+				params: {
+					limit: filter.limit,
+					offset:
+						Number(pageQuery) > 0 ? (Number(pageQuery) - 1) * filter.limit : 0,
+				},
+			})
+
+			// console.log("journals res", res)
+
+			setJournals(res?.data?.data)
+			setFilter({
+				...filter,
+				totalItems: Number(res?.data?.total_items) || 0,
+			})
+		} catch (err) {
+			console.error(err)
+		}
+		setIsLoading(false)
+	}
 
 	useEffect(() => {
-		const fetchJournals = async () => {
-			try {
-				const res = await ax.get("/journal", {
-					params: filter,
-				})
-
-				console.log("journals res", res)
-
-				setJournals(res?.data)
-			} catch (err) {
-				console.error(err)
-			}
-			setIsLoading(false)
-		}
-
 		if (isLoading) fetchJournals()
 	}, [isLoading])
+
+	useEffect(() => {
+		// console.log("pageQuery", pageQuery)
+		fetchJournals()
+	}, [pageQuery])
 
 	const handleDelete = async () => {
 		try {
@@ -114,7 +134,7 @@ export default function List() {
 									<td className="p-2 border-t border-t-slate-200">
 										<input
 											type="checkbox"
-											checked={selected[journal.id]}
+											checked={selected[journal.id] || false}
 											onChange={(e) =>
 												setSelected({
 													...selected,
@@ -164,6 +184,7 @@ export default function List() {
 					</table>
 				</CardBody>
 			</Card>
+			<Pagination data={filter} />
 			{someAreSelected && <Button onClick={handleDelete}>Delete</Button>}
 			<Outlet />
 		</>

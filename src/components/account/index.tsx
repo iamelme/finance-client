@@ -2,32 +2,57 @@ import { useState, useEffect } from "react"
 import useAxios from "../../hooks/useAxios"
 import { useNavigate } from "react-router-dom"
 import type { AccountType } from "../../types"
-import { Button, Card, CardBody } from "../../ui"
+import { Button, Card, CardBody, Pagination } from "../../ui"
 import { Edit, Plus } from "react-feather"
-import { bgType } from "../../helpers"
+// import { bgType } from "../../helpers"
+
+export function bgType(type: string) {
+	if (type === "Revenue") return "bg-green-200 text-green-800"
+
+	return "bg-red-200 text-red-800"
+}
 
 export default function AccountItem() {
 	const [isLoading, setIsLoading] = useState(true)
 	const [accounts, setAccounts] = useState<AccountType[]>([])
 	const [selected, setSelected] = useState<Record<string, boolean>>({})
 
+	const [filter, setFilter] = useState({ limit: 25, totalItems: 0, offset: 0 })
 	const navigate = useNavigate()
 	const ax = useAxios()
 
-	useEffect(() => {
-		const loadAccountItems = async () => {
-			try {
-				const res = await ax.get("/account")
-				console.log("account items res", res.data)
-				setAccounts(res.data)
-			} catch (e) {
-				console.error(e)
-			}
-			setIsLoading(false)
+	const searchQuery = new URLSearchParams(window.location.search)
+	const pageQuery = searchQuery.get("page")
+
+	const loadAccountItems = async () => {
+		try {
+			const res = await ax.get("/account", {
+				params: {
+					limit: filter.limit,
+					offset:
+						Number(pageQuery) > 0 ? (Number(pageQuery) - 1) * filter.limit : 0,
+				},
+			})
+			console.log("account items res", res.data)
+			setAccounts(res.data?.data)
+			setFilter({
+				...filter,
+				totalItems: Number(res?.data?.total_items) || 0,
+			})
+		} catch (e) {
+			console.error(e)
 		}
+		setIsLoading(false)
+	}
+
+	useEffect(() => {
 		if (isLoading) loadAccountItems()
 	}, [isLoading])
 
+	useEffect(() => {
+		// console.log("pageQuery", pageQuery)
+		loadAccountItems()
+	}, [pageQuery])
 	const handleDelete = async () => {
 		try {
 			const promises = Object.keys(selected).map(async (key) =>
@@ -145,6 +170,7 @@ export default function AccountItem() {
 					</table>
 				</CardBody>
 			</Card>
+			<Pagination data={filter} />
 
 			{someAreSelected && <Button onClick={handleDelete}>Delete</Button>}
 		</>

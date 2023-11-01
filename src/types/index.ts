@@ -1,4 +1,4 @@
-import { DeepMap, FieldError, FieldErrors } from "react-hook-form"
+import { FieldErrors } from "react-hook-form"
 
 export type AccountType = {
 	id: string
@@ -12,6 +12,7 @@ export type JournalType = {
 	account_type: string
 	account_name: string
 	amount: number
+	human_id?: string
 	note: string
 }
 

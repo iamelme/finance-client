@@ -16,7 +16,7 @@ const initState = {
 type UserType = (typeof initState)["user"]
 
 export type AppContextType = {
-	user: UserType
+	user: UserType & { roles: string[] }
 	accessToken: string | null
 	updateState: ({
 		user,

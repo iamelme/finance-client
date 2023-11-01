@@ -18,7 +18,7 @@ const classes = {
 	},
 	textColor: {
 		primary: "text-blue-500 hover:text-blue-600",
-		secondary: "text-slate-500 hover:text-slate-600",
+		secondary: "text-slate-400 hover:text-slate-600",
 	},
 	color: {
 		primary: "bg-blue-500 border-blue-500 hover:bg-blue-600 text-white",

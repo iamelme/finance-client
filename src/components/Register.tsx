@@ -177,6 +177,10 @@ export default function RegisterForm() {
 										{errorMessage}
 									</Alert>
 								)}
+
+								<p className="mb-3">
+									Already have an account? <Link to="/login">Login</Link>{" "}
+								</p>
 								<Button
 									type="submit"
 									isLoading={isSubmitting}
