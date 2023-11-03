@@ -3,18 +3,18 @@ import { Button } from "."
 
 export default function Pagination({
 	data: { limit, totalItems, offset },
+	numberOfItems = 5,
 }: // onChange,
 {
 	data: Record<string, number>
+	numberOfItems?: number
 }) {
 	const [searchParams, setSearchParams] = useSearchParams()
-
-	const numberOfItems = 3
 
 	const pageQuery = searchParams.get("page")
 
 	const page = Number(pageQuery) || 1
-	console.log({ limit, totalItems, offset })
+	// console.log({ limit, totalItems, offset })
 	const numberOfPages = Math.ceil(totalItems / limit)
 
 	if (numberOfPages === 1) return null
@@ -93,8 +93,8 @@ export default function Pagination({
 		const pageIndex = page > mid ? page - (midIndex - idx) : idx + 1
 
 		// if (pastMid) {
-		console.log("here pastmid", page)
-		console.log("pageIndex ", pageIndex, "page idx", page + idx)
+		// console.log("here pastmid", page)
+		// console.log("pageIndex ", pageIndex, "page idx", page + idx)
 		if (pageIndex <= numberOfPages) {
 			acc.push(
 				<Button
@@ -117,7 +117,7 @@ export default function Pagination({
 				</Button>
 			)
 		}
-		console.log("midIndex", midIndex)
+		// console.log("midIndex", midIndex)
 		// } else {
 		// 	console.log("pageIndex ", pageIndex)
 		// 	acc.push(
@@ -192,18 +192,26 @@ export default function Pagination({
 
 	return (
 		<div>
-			{page > 1 && (
-				<>
-					{firstButton}
-					{prevButton}
-				</>
-			)}
-			{buttons}
-			{page < numberOfPages && (
-				<>
-					{nextButton} {lastButton}
-				</>
-			)}
+			<div className="mb-2 text-slate-400">
+				Showing {offset + 1} to{" "}
+				{offset + limit >= totalItems ? totalItems : offset + limit} of{" "}
+				{totalItems} entries
+			</div>
+
+			<div>
+				{page > 1 && (
+					<>
+						{firstButton}
+						{prevButton}
+					</>
+				)}
+				{buttons}
+				{page < numberOfPages && (
+					<>
+						{nextButton} {lastButton}
+					</>
+				)}
+			</div>
 		</div>
 	)
 }

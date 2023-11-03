@@ -2,6 +2,8 @@ import { useContext, useState } from "react"
 import { NavLink } from "react-router-dom"
 import { AppContext } from "../AppContext"
 import { Button } from "../ui"
+import Dropdown from "../ui/Dropdown"
+import { ChevronDown } from "react-feather"
 
 export default function Header() {
 	const context = useContext(AppContext)
@@ -15,9 +17,9 @@ export default function Header() {
 		user?.roles?.includes("admin") || user?.roles?.includes("super-admin")
 
 	return (
-		<header className="sticky top-0 flex justify-between sm:px-2 md:px-14 py-4 bg-white shadow">
+		<header className="sticky top-0 z-10 flex justify-between sm:px-2 md:px-14 py-4 bg-white shadow">
 			<h1>Header</h1>
-			<nav>
+			<nav className="font-bold">
 				{isAdmin && (
 					<NavLink
 						to="/dashboard"
@@ -44,12 +46,48 @@ export default function Header() {
 				>
 					Journal
 				</NavLink>
+				<Dropdown
+					direction="end"
+					onClickOutside={(e) => console.log("e outside", e)}
+					trigger={(props) => {
+						console.log("trigger props", props)
+						return (
+							<div className="cursor-pointer">
+								{user?.id && `${user?.firstName} ${user?.lastName}`}
+							</div>
+						)
+					}}
+				>
+					<div>
+						<ul>
+							<li>
+								<NavLink
+									to="/dashboard/account"
+									className={(isActive) =>
+										isActive ? "mr-2 text-bold" : "mr-2"
+									}
+								>
+									Account
+								</NavLink>
+							</li>
+							<li>
+								<NavLink
+									to="/dashboard/journal"
+									className={(isActive) =>
+										isActive ? "mr-2 text-bold" : "mr-2"
+									}
+								>
+									Journal
+								</NavLink>
+							</li>
+						</ul>
+					</div>
+				</Dropdown>
 				<Button
 					variant="ghost"
-					className="relative"
+					className="relative !font-bold"
 					onClick={() => setIsOpen(!isOpen)}
 				>
-					{user?.id && `${user?.firstName} ${user?.lastName}`}
 					{isOpen && (
 						<div className="absolute top-full right-0 w-full bg-white shadow">
 							<ul>

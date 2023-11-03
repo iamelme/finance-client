@@ -1,33 +1,56 @@
 import { useState, useEffect } from "react"
 import { Outlet, useNavigate } from "react-router-dom"
-import { Plus, Edit } from "react-feather"
+import { Plus, Edit, ChevronDown, Filter } from "react-feather"
 
 import useAxios from "../../hooks/useAxios"
 import { DateFormatter, CurrencyFormatter } from "../../helpers"
 import { JournalType } from "../../types"
-import { Button, Card, CardBody, Pagination } from "../../ui"
+import { Button, Card, CardBody, Dropdown, Pagination } from "../../ui"
+import ReactDatePicker from "react-datepicker"
 
 export function bgType(type: string) {
 	if (type === "Revenue") return "bg-green-200 text-green-800"
 
-	return "bg-red-200 text-red-800"
+	return "bg-rose-200 text-rose-800"
 }
 export default function List() {
 	const [journals, setJournals] = useState<JournalType[]>([])
 	const [isLoading, setIsLoading] = useState(true)
 	const [selected, setSelected] = useState<Record<string, boolean>>({})
 
-	const [filter, setFilter] = useState({ limit: 25, totalItems: 0, offset: 0 })
+	const [filter, setFilter] = useState<{
+		type: string[]
+		sort: string
+		searchText: string
+		limit: number
+		totalItems: number
+		offset: number
+	}>({
+		searchText: "",
+		sort: "DESC",
+		type: ["Revenue", "Expense"],
+		limit: 5,
+		totalItems: 0,
+		offset: 0,
+	})
 	const navigate = useNavigate()
 
 	const searchQuery = new URLSearchParams(window.location.search)
 	const pageQuery = searchQuery.get("page")
+
+	const [startDate, setStartDate] = useState<Date | null>(null)
+	const [endDate, setEndDate] = useState<Date | null>(null)
 
 	const ax = useAxios()
 	const fetchJournals = async () => {
 		try {
 			const res = await ax.get("/journal", {
 				params: {
+					searchText: filter.searchText || undefined,
+					startDate: startDate,
+					endDate: endDate,
+					sort: filter.sort,
+					type: filter.type,
 					limit: filter.limit,
 					offset:
 						Number(pageQuery) > 0 ? (Number(pageQuery) - 1) * filter.limit : 0,
@@ -87,26 +110,179 @@ export default function List() {
 		setSelected({})
 	}
 
-	console.log("selected", selected)
+	console.log("filter", filter)
+	// console.log("selected", selected)
 
 	const someAreSelected = Object.values(selected).some((v) => v)
 	const areAllSelected =
 		Object.values(selected).every((v) => v) &&
 		Object.values(selected)?.length === journals.length
+
+	const offset =
+		Number(pageQuery) > 0 ? (Number(pageQuery) - 1) * filter.limit : 0
 	return (
 		<>
+			<input
+				className="w-full px-4 py-1 bg-white border border-slate-300 rounded text-sm"
+				name="searchText"
+				onChange={(e) => {
+					setFilter({ ...filter, [e.target.name]: e.target.value })
+					setIsLoading(true)
+				}}
+			/>
 			<header className="flex justify-between my-5">
 				<h2 className="text-xl">Journal</h2>
 
-				<div>
-					<Button onClick={() => navigate("/dashboard/journal/add")}>
-						<Plus
-							className="mr-1 leading-3	"
-							size={11}
-							strokeWidth={3}
+				<div className="flex ">
+					<div className="mr-2">
+						<ReactDatePicker
+							selected={startDate}
+							placeholderText="From Date"
+							maxDate={endDate}
+							onChange={(date) => {
+								setStartDate(date)
+								// setFilter({ ...filter, startDate: date as Date })
+								setIsLoading(true)
+							}}
+							customInput={
+								<input className="w-full px-4 py-1 bg-white border border-slate-300 rounded text-sm" />
+							}
 						/>
-						Add
-					</Button>
+					</div>
+					<div className="mr-2">
+						<ReactDatePicker
+							selected={endDate}
+							placeholderText="To Date"
+							minDate={startDate}
+							onChange={(date) => {
+								setEndDate(date)
+								// setFilter({ ...filter, endDate: date as Date })
+								setIsLoading(true)
+							}}
+							customInput={
+								<input className="w-full px-4 py-1 bg-white border border-slate-300 rounded text-sm" />
+							}
+						/>
+					</div>
+					<Dropdown
+						direction="end"
+						onClickOutside={(e) => console.log("e outside", e)}
+						trigger={(props) => {
+							const { isOpen } = props
+							console.log("trigger props", props)
+							return (
+								<Button
+									variant="outline"
+									color="secondary"
+									className={`${isOpen ? "bg-slate-200" : ""}`}
+								>
+									<Filter
+										size={11}
+										className="mr-1"
+									/>{" "}
+									Filter
+								</Button>
+							)
+						}}
+						className="mr-2"
+					>
+						<div>
+							Sort by
+							<div>
+								<label htmlFor="desc">
+									<input
+										type="radio"
+										name="sort"
+										id="desc"
+										value="DESC"
+										checked={filter.sort === "DESC"}
+										onChange={(e) => {
+											setFilter({
+												...filter,
+												sort: e.target.value,
+											})
+											setIsLoading(true)
+										}}
+									/>{" "}
+									Newest
+								</label>
+								<label htmlFor="asc">
+									<input
+										type="radio"
+										name="sort"
+										id="asc"
+										value="ASC"
+										checked={filter.sort === "ASC"}
+										onChange={(e) => {
+											setFilter({
+												...filter,
+												sort: e.target.value,
+											})
+											setIsLoading(true)
+										}}
+									/>{" "}
+									Oldest
+								</label>
+							</div>
+							Type
+							<div>
+								<label htmlFor="revenue">
+									<input
+										type="checkbox"
+										name="type"
+										id="revenue"
+										value="Revenue"
+										checked={filter.type.includes("Revenue")}
+										onChange={(e) => {
+											setFilter({
+												...filter,
+												type: e.target.checked
+													? [...filter.type, e.target.value]
+													: filter.type.filter(
+															(type) => type !== e.target.value
+													  ),
+											})
+											setIsLoading(true)
+										}}
+									/>{" "}
+									Revenue
+								</label>
+							</div>
+							<div>
+								<label htmlFor="expense">
+									<input
+										type="checkbox"
+										name="type"
+										id="expense"
+										value="Expense"
+										checked={filter.type.includes("Expense")}
+										onChange={(e) => {
+											setFilter({
+												...filter,
+												type: e.target.checked
+													? [...filter.type, e.target.value]
+													: filter.type.filter(
+															(type) => type !== e.target.value
+													  ),
+											})
+											setIsLoading(true)
+										}}
+									/>{" "}
+									Expense
+								</label>
+							</div>
+						</div>
+					</Dropdown>
+					<div className="inline-block">
+						<Button onClick={() => navigate("/dashboard/journal/add")}>
+							<Plus
+								className="mr-1 leading-3	"
+								size={11}
+								strokeWidth={3}
+							/>
+							Add
+						</Button>
+					</div>
 				</div>
 			</header>
 			<Card className="mb-3">
@@ -184,8 +360,23 @@ export default function List() {
 					</table>
 				</CardBody>
 			</Card>
-			<Pagination data={filter} />
-			{someAreSelected && <Button onClick={handleDelete}>Delete</Button>}
+			<div className="flex justify-between items-center">
+				<div>
+					{someAreSelected && <Button onClick={handleDelete}>Delete</Button>}
+				</div>
+				<div>
+					<Pagination
+						data={{
+							limit: filter.limit,
+							totalItems: filter.totalItems,
+							offset:
+								Number(pageQuery) > 0
+									? (Number(pageQuery) - 1) * filter.limit
+									: 0,
+						}}
+					/>
+				</div>
+			</div>
 			<Outlet />
 		</>
 	)

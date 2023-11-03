@@ -70,7 +70,7 @@ export default function JournalForm() {
 
 			console.log("account items res", res.data)
 			return (
-				res?.data?.map((account: Record<string, string>) => ({
+				res?.data?.data?.map((account: Record<string, string>) => ({
 					value: account.id,
 					label: account.name,
 					type: account.type,
@@ -126,7 +126,7 @@ export default function JournalForm() {
 				console.log("account items res effect", res.data)
 
 				setAccounts(
-					res?.data?.map((account: Record<string, string>) => ({
+					res?.data?.data?.map((account: Record<string, string>) => ({
 						value: account.id,
 						label: account.name,
 						type: account.type,
@@ -200,6 +200,7 @@ export default function JournalForm() {
 								inputId="account"
 								label="Account"
 								cacheOptions
+								className="min-h-[28px]"
 								defaultOptions={accounts}
 								loadOptions={loadAccountItemOptions}
 								// options={accounts}
