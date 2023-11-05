@@ -89,8 +89,7 @@ export default function AccountItemForm() {
 		setIsSubmitting(false)
 	}
 
-	const watchType = watch("type")
-	// console.log({ errors })
+	console.log({ errors })
 
 	return (
 		<div>
@@ -100,6 +99,31 @@ export default function AccountItemForm() {
 				<CardBody>
 					<FormProvider {...methods}>
 						<form onSubmit={handleSubmit(onSubmit)}>
+							<div className="mb-3">
+								<div className="mb-1">
+									<label className="font-medium text-gray-400">Type</label>
+								</div>
+								<Input
+									type="radio"
+									label="Revenue"
+									name="type"
+									id="Revenue"
+									value="Revenue"
+									register={register}
+									errors={errors}
+								/>
+								<Input
+									type="radio"
+									label="Expense"
+									name="type"
+									id="Expense"
+									value="Expense"
+									className="ml-3"
+									register={register}
+									errors={errors}
+								/>
+								{/* <input type="checkbox" name="type" id="type" {...regi} /> */}
+							</div>
 							<Input
 								id="name"
 								type="text"
@@ -108,7 +132,7 @@ export default function AccountItemForm() {
 								register={register}
 								errors={errors}
 							/>
-							<Select
+							{/* <Select
 								unstyled
 								inputId="type"
 								label="Type"
@@ -118,7 +142,7 @@ export default function AccountItemForm() {
 									setValue("type", e?.value || "", { shouldDirty: true })
 								}}
 								errors={errors}
-							/>
+							/> */}
 
 							{errorMessage && (
 								<Alert

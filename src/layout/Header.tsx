@@ -1,17 +1,46 @@
 import { useContext, useState } from "react"
-import { NavLink } from "react-router-dom"
+import { NavLink, useNavigate } from "react-router-dom"
 import { AppContext } from "../AppContext"
 import { Button } from "../ui"
 import Dropdown from "../ui/Dropdown"
-import { ChevronDown } from "react-feather"
+import useAxios from "../hooks/useAxios"
 
 export default function Header() {
 	const context = useContext(AppContext)
-	const { user } = context || {}
+	const { user, updateState } = context || {}
+
+	const ax = useAxios()
+
+	const navigate = useNavigate()
 
 	const [isOpen, setIsOpen] = useState(false)
 
 	// console.log("header user context", user)
+
+	const handleLogout = async () => {
+		try {
+			const res = await ax.get("/logout")
+
+			console.log("logout res", res)
+
+			updateState?.({
+				user: {
+					id: "",
+					firstName: "",
+					lastName: "",
+					email: "",
+					roles: [],
+					currency: "",
+					locale: "",
+					countryCode: "",
+				},
+			})
+
+			navigate("/login")
+		} catch (e) {
+			console.log("e", e)
+		}
+	}
 
 	const isAdmin =
 		user?.roles?.includes("admin") || user?.roles?.includes("super-admin")
@@ -39,6 +68,12 @@ export default function Header() {
 					className={(isActive) => (isActive ? "mr-2 text-bold" : "mr-2")}
 				>
 					Account
+				</NavLink>
+				<NavLink
+					to="/dashboard/report"
+					className={(isActive) => (isActive ? "mr-2 text-bold" : "mr-2")}
+				>
+					Report
 				</NavLink>
 				<NavLink
 					to="/dashboard/journal"
@@ -79,6 +114,14 @@ export default function Header() {
 								>
 									Journal
 								</NavLink>
+							</li>
+							<li>
+								<Button
+									variant="ghost"
+									onClick={handleLogout}
+								>
+									Logout
+								</Button>
 							</li>
 						</ul>
 					</div>

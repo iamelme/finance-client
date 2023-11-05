@@ -1,12 +1,17 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useContext } from "react"
 import { Outlet, useNavigate } from "react-router-dom"
-import { Plus, Edit, ChevronDown, Filter } from "react-feather"
+import { Plus, Edit, Filter } from "react-feather"
 
 import useAxios from "../../hooks/useAxios"
-import { DateFormatter, CurrencyFormatter } from "../../helpers"
+import {
+	DateFormatter,
+	CurrencyFormatter,
+	getDateFnsLocale,
+} from "../../helpers"
 import { JournalType } from "../../types"
 import { Button, Card, CardBody, Dropdown, Pagination } from "../../ui"
-import ReactDatePicker from "react-datepicker"
+import ReactDatePicker, { registerLocale } from "react-datepicker"
+import { AppContext } from "../../AppContext"
 
 export function bgType(type: string) {
 	if (type === "Revenue") return "bg-green-200 text-green-800"
@@ -14,12 +19,16 @@ export function bgType(type: string) {
 	return "bg-rose-200 text-rose-800"
 }
 export default function List() {
+	const context = useContext(AppContext)
+	const { user } = context || {}
 	const [journals, setJournals] = useState<JournalType[]>([])
 	const [isLoading, setIsLoading] = useState(true)
 	const [selected, setSelected] = useState<Record<string, boolean>>({})
 
 	const [filter, setFilter] = useState<{
 		type: string[]
+		startDate: Date | null
+		endDate: Date | null
 		sort: string
 		searchText: string
 		limit: number
@@ -27,6 +36,8 @@ export default function List() {
 		offset: number
 	}>({
 		searchText: "",
+		startDate: null,
+		endDate: null,
 		sort: "DESC",
 		type: ["Revenue", "Expense"],
 		limit: 5,
@@ -38,8 +49,8 @@ export default function List() {
 	const searchQuery = new URLSearchParams(window.location.search)
 	const pageQuery = searchQuery.get("page")
 
-	const [startDate, setStartDate] = useState<Date | null>(null)
-	const [endDate, setEndDate] = useState<Date | null>(null)
+	// const [startDate, setStartDate] = useState<Date | null>(null)
+	// const [endDate, setEndDate] = useState<Date | null>(null)
 
 	const ax = useAxios()
 	const fetchJournals = async () => {
@@ -47,8 +58,8 @@ export default function List() {
 			const res = await ax.get("/journal", {
 				params: {
 					searchText: filter.searchText || undefined,
-					startDate: startDate,
-					endDate: endDate,
+					startDate: filter.startDate,
+					endDate: filter.endDate,
 					sort: filter.sort,
 					type: filter.type,
 					limit: filter.limit,
@@ -78,6 +89,10 @@ export default function List() {
 		// console.log("pageQuery", pageQuery)
 		fetchJournals()
 	}, [pageQuery])
+
+	useEffect(() => {
+		registerLocale(user?.locale as string, getDateFnsLocale(user?.locale))
+	}, [])
 
 	const handleDelete = async () => {
 		try {
@@ -118,13 +133,14 @@ export default function List() {
 		Object.values(selected).every((v) => v) &&
 		Object.values(selected)?.length === journals.length
 
-	const offset =
-		Number(pageQuery) > 0 ? (Number(pageQuery) - 1) * filter.limit : 0
+	// const offset =
+	// 	Number(pageQuery) > 0 ? (Number(pageQuery) - 1) * filter.limit : 0
 	return (
 		<>
 			<input
 				className="w-full px-4 py-1 bg-white border border-slate-300 rounded text-sm"
 				name="searchText"
+				placeholder="Search journal..."
 				onChange={(e) => {
 					setFilter({ ...filter, [e.target.name]: e.target.value })
 					setIsLoading(true)
@@ -136,12 +152,15 @@ export default function List() {
 				<div className="flex ">
 					<div className="mr-2">
 						<ReactDatePicker
-							selected={startDate}
+							selected={filter.startDate}
 							placeholderText="From Date"
-							maxDate={endDate}
+							maxDate={filter.endDate}
+							showTimeSelect
+							locale={user?.locale as string}
+							dateFormat="Pp"
 							onChange={(date) => {
-								setStartDate(date)
-								// setFilter({ ...filter, startDate: date as Date })
+								// setStartDate(date)
+								setFilter({ ...filter, startDate: date as Date })
 								setIsLoading(true)
 							}}
 							customInput={
@@ -151,12 +170,15 @@ export default function List() {
 					</div>
 					<div className="mr-2">
 						<ReactDatePicker
-							selected={endDate}
+							selected={filter.endDate}
 							placeholderText="To Date"
-							minDate={startDate}
+							minDate={filter.startDate}
+							showTimeSelect
+							locale={user?.locale as string}
+							dateFormat="Pp"
 							onChange={(date) => {
-								setEndDate(date)
-								// setFilter({ ...filter, endDate: date as Date })
+								// setEndDate(date)
+								setFilter({ ...filter, endDate: date as Date })
 								setIsLoading(true)
 							}}
 							customInput={
@@ -300,7 +322,7 @@ export default function List() {
 								<th className="p-2 text-sm uppercase">Date</th>
 								<th className="p-2 text-sm uppercase">Account</th>
 								<th className="p-2 text-sm uppercase text-right">Amount</th>
-								<th className="p-2 text-sm uppercase">Note</th>
+								<th className="p-2 text-sm uppercase w-[35%]">Note</th>
 								<th></th>
 							</tr>
 						</thead>

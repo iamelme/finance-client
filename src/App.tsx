@@ -18,6 +18,7 @@ import JournalForm from "./components/journal/Form"
 import AccountItemForm from "./components/account/Form"
 import AccountItem from "./components/account"
 import Register from "./components/Register"
+import Report from "./components/Report"
 
 // const router = createBrowserRouter([
 // 	{
@@ -89,6 +90,11 @@ export default function App() {
 								path="dashboard"
 								element={<Root />}
 							>
+								<Route
+									path="report"
+									element={<Report />}
+								/>
+
 								<Route
 									path="journal"
 									element={<Root />}

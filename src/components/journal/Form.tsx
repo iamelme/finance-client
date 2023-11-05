@@ -1,5 +1,5 @@
 /* eslint-disable no-mixed-spaces-and-tabs */
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 // import { ErrorMessage } from "@hookform/error-message"
@@ -7,7 +7,8 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 
 // import AsyncSelect from "react-select/async"
-import DatePicker from "react-datepicker"
+import * as locale from "date-fns/locale"
+import DatePicker, { registerLocale } from "react-datepicker"
 
 import "react-datepicker/dist/react-datepicker.css"
 
@@ -23,6 +24,8 @@ import {
 	Alert,
 	Button,
 } from "../../ui"
+import { getDateFnsLocale } from "../../helpers"
+import { AppContext } from "../../AppContext"
 // import { AppContext } from "../../AppContext"
 
 const schema = z.object({
@@ -50,6 +53,10 @@ type Schema = z.infer<typeof schema>
 type SubmitSchema = Omit<Schema, "account"> & { account: string }
 
 export default function JournalForm() {
+	const context = useContext(AppContext)
+
+	const { user } = context || {}
+
 	const [accounts, setAccounts] = useState<Option[]>([])
 	const [isSubmitting, setIsSubmitting] = useState(false)
 	const [errorMessage, setErrorMessage] = useState("")
@@ -136,7 +143,14 @@ export default function JournalForm() {
 				console.error(e)
 			}
 		}
+
 		loadAccountItems()
+		console.log(
+			"getDateFnsLocale(user?.locale) as unknown as keyof typeof locale",
+			getDateFnsLocale(user?.locale) as unknown as keyof typeof locale
+		)
+
+		registerLocale(user?.locale as string, getDateFnsLocale(user?.locale))
 	}, [])
 
 	const onSubmit = async (data: Schema | SubmitSchema) => {
@@ -166,7 +180,7 @@ export default function JournalForm() {
 
 	const watchDate = watch("date")
 	console.log("errors", errors)
-	console.log({ isDirty })
+	console.log({ isDirty, user })
 
 	return (
 		<div>
@@ -186,6 +200,9 @@ export default function JournalForm() {
 								onChange={(date: Date) => {
 									setValue("date", date, { shouldDirty: true })
 								}}
+								showTimeSelect
+								locale={user?.locale as string}
+								dateFormat="Pp"
 								wrapperClassName="w-full"
 								customInput={
 									<DatePickerInput
@@ -200,7 +217,6 @@ export default function JournalForm() {
 								inputId="account"
 								label="Account"
 								cacheOptions
-								className="min-h-[28px]"
 								defaultOptions={accounts}
 								loadOptions={loadAccountItemOptions}
 								// options={accounts}

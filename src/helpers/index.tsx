@@ -2,6 +2,8 @@ import { useContext } from "react"
 import clm from "country-locale-map"
 import countryList from "country-list"
 
+import * as Locales from "date-fns/locale"
+
 import { AppContext } from "../AppContext"
 
 export function parseJwt(token: string) {
@@ -14,14 +16,48 @@ export function parseJwt(token: string) {
 
 // todo add context for each formatter
 
-export function DateFormatter({ value }: { value: string | null }) {
+export function getDateFnsLocale(locale?: string) {
+	console.log("locale", locale)
+	const newLocale = locale?.replace("-", "") as keyof typeof Locales
+	console.log("newLocale ", newLocale)
+
+	const res = Locales[newLocale] ?? Locales.enUS
+
+	console.log("res", res)
+	return res
+}
+
+export function DateFormatter({
+	value,
+	showTime = true,
+}: {
+	value: string | null
+	showTime?: boolean
+}) {
 	const context = useContext(AppContext)
 
 	const { user } = context || {}
 
 	if (!value) return
 
-	return <> {new Intl.DateTimeFormat(user?.locale).format(new Date(value))}</>
+	return (
+		<>
+			{new Intl.DateTimeFormat(user?.locale, {
+				year: "numeric",
+				month: "numeric",
+				day: "numeric",
+			}).format(new Date(value))}
+			{showTime && (
+				<div className="text-sm text-slate-400">
+					{new Intl.DateTimeFormat(user?.locale, {
+						hour: "numeric",
+						minute: "numeric",
+						hourCycle: "h12",
+					}).format(new Date(value))}
+				</div>
+			)}
+		</>
+	)
 }
 
 export function CurrencyFormatter({ value }: { value: number }) {

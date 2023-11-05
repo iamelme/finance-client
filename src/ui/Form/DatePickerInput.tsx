@@ -32,20 +32,22 @@ const DatePicker = forwardRef(function DatePickerInput(
 				ref={ref}
 				className="w-full px-4 py-2 border border-slate-300 rounded"
 			/>
-			<ErrorMessage
-				errors={errors}
-				name={
-					id ||
-					(name as FieldName<
-						FieldValuesFromFieldErrors<
-							Partial<DeepMap<Record<string, unknown>, FieldError>>
-						>
-					>)
-				}
-				render={({ message }) => (
-					<p className="mt-1 text-sm text-red-500">{message}</p>
-				)}
-			/>
+			{errors && (
+				<ErrorMessage
+					errors={errors}
+					name={
+						id ||
+						(name as FieldName<
+							FieldValuesFromFieldErrors<
+								Partial<DeepMap<Record<string, unknown>, FieldError>>
+							>
+						>)
+					}
+					render={({ message }) => (
+						<p className="mt-1 text-sm text-red-500">{message}</p>
+					)}
+				/>
+			)}
 		</div>
 	)
 })

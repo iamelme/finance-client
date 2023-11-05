@@ -6,7 +6,6 @@ import {
 } from "react-select"
 import { AsyncProps, default as ReactAsyncSelect } from "react-select/async"
 import classNames from "classnames"
-import { bgType } from "../../helpers"
 import { DeepMap, FieldError, FieldName } from "react-hook-form"
 import {
 	ErrorMessage,
@@ -14,7 +13,8 @@ import {
 } from "@hookform/error-message"
 import { ErrorType } from "../../types"
 
-const t = {
+const t = (size: Size) => ({
+	container: () => classNames(classes.size.container[size]),
 	control: ({
 		isDisabled,
 		isFocused,
@@ -29,7 +29,7 @@ const t = {
 			isFocused && menuIsOpen && " rounded-b-none border-b-0",
 			isFocused &&
 				"hover:border-slate-300 hover:rounded-b-none hover:border-b-0",
-			"min-h-0 px-4 border border-slate-300 rounded hover:cursor-pointer"
+			`${classes.size.input[size]} px-4 border border-slate-300 rounded hover:cursor-pointer`
 		),
 	option: ({
 		isDisabled,
@@ -49,17 +49,31 @@ const t = {
 			!isSelected && isFocused && "bg-white",
 			!isDisabled && isSelected && "active:bg-white",
 			!isDisabled && !isSelected && "active:bg-white",
-			`px-4 py-2 bg-white border border-t-none border-slate-300 border-b-0 last:border-b last:rounded-b hover:bg-gray-50 hover:cursor-pointer ${bgType(
-				data?.type
-			)}`
+			`px-4 py-2 bg-white border border-t-none border-slate-300 border-b-0 last:border-b last:rounded-b hover:bg-gray-50 hover:cursor-pointer ${
+				data.type === "Revenue" ? "text-green-500" : "text-red-500"
+			}`
 		),
 
 	noOptionsMessage: () =>
 		classNames(
 			"px-4 py-2 bg-white border border-t-none border-slate-300 border-b-0 last:border-b last:rounded-b "
 		),
+})
+
+const classes = {
+	size: {
+		container: {
+			sm: "min-h-[28px]",
+			base: "",
+		},
+		input: {
+			sm: "!min-h-[inherit]",
+			base: "",
+		},
+	},
 }
 
+type Size = keyof typeof classes.size.container
 type classNamesType = ClassNamesConfig
 
 export function Select<
@@ -69,11 +83,13 @@ export function Select<
 >({
 	inputId = "react-select",
 	label = "",
+	size = "base",
 	errors,
 	...props
 }: {
 	label?: string
 	inputId?: string
+	size?: Size
 	errors?: ErrorType
 } & Props<OptionType, IsMulti, Group> &
 	classNamesType) {
@@ -92,21 +108,23 @@ export function Select<
 				inputId={inputId}
 				placeholder=""
 				{...props}
-				classNames={t as ClassNamesConfig<OptionType, IsMulti, Group>}
+				classNames={t(size) as ClassNamesConfig<OptionType, IsMulti, Group>}
 			/>
-			<ErrorMessage
-				errors={errors}
-				name={
-					`${name}` as FieldName<
-						FieldValuesFromFieldErrors<
-							Partial<DeepMap<Record<string, unknown>, FieldError>>
+			{errors && (
+				<ErrorMessage
+					errors={errors}
+					name={
+						`${name}` as FieldName<
+							FieldValuesFromFieldErrors<
+								Partial<DeepMap<Record<string, unknown>, FieldError>>
+							>
 						>
-					>
-				}
-				render={({ message }) => (
-					<p className="mt-1 text-sm text-red-500">{message}</p>
-				)}
-			/>
+					}
+					render={({ message }) => (
+						<p className="mt-1 text-sm text-red-500">{message}</p>
+					)}
+				/>
+			)}
 		</div>
 	)
 }
@@ -118,11 +136,13 @@ export function AsyncSelect<
 >({
 	inputId = "react-select",
 	label = "",
+	size = "base",
 	errors,
 	...props
 }: {
 	label?: string
 	inputId?: string
+	size?: Size
 	errors?: ErrorType
 } & AsyncProps<OptionType, IsMulti, GroupType>) {
 	console.log("async errors", errors)
@@ -140,7 +160,7 @@ export function AsyncSelect<
 				inputId={inputId}
 				placeholder=""
 				{...props}
-				classNames={t}
+				classNames={t(size) as ClassNamesConfig<OptionType, IsMulti, GroupType>}
 			/>
 			<ErrorMessage
 				errors={errors}
