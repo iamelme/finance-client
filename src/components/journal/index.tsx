@@ -188,7 +188,7 @@ export default function List() {
 					</div>
 					<Dropdown
 						direction="end"
-						onClickOutside={(e) => console.log("e outside", e)}
+						// onClickOutside={(e) => console.log("e outside", e)}
 						trigger={(props) => {
 							const { isOpen } = props
 							console.log("trigger props", props)

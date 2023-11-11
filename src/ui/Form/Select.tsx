@@ -14,7 +14,7 @@ import {
 import { ErrorType } from "../../types"
 
 const t = (size: Size) => ({
-	container: () => classNames(classes.size.container[size]),
+	container: () => classNames(`${classes.size.container[size]} bg-white`),
 	control: ({
 		isDisabled,
 		isFocused,

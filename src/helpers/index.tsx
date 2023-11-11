@@ -36,6 +36,7 @@ export function DateFormatter({
 }) {
 	const context = useContext(AppContext)
 
+	console.log("value", value)
 	const { user } = context || {}
 
 	if (!value) return

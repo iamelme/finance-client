@@ -18,7 +18,7 @@ import JournalForm from "./components/journal/Form"
 import AccountItemForm from "./components/account/Form"
 import AccountItem from "./components/account"
 import Register from "./components/Register"
-import Report from "./components/Report"
+import Report from "./components/report"
 
 // const router = createBrowserRouter([
 // 	{

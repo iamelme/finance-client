@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react"
 const classes = {
 	size: {
 		base: "w-48",
+		auto: "auto",
 	},
 }
 
@@ -12,8 +13,9 @@ type DropdownProps = {
 	className?: string
 	size?: Size
 	direction?: "start" | "end"
-	trigger?: (v: any) => React.ReactNode
-	children: React.ReactNode
+	trigger: (v: any) => React.ReactNode
+	content?: (v: any) => React.ReactNode | React.ReactNode
+	children?: React.ReactNode
 	onClickOutside?: (v: any) => void
 }
 
@@ -22,6 +24,7 @@ export default function Dropdown({
 	size = "base",
 	direction = "start",
 	onClickOutside,
+	content,
 	children,
 	trigger,
 }: DropdownProps) {
@@ -29,7 +32,7 @@ export default function Dropdown({
 	const dropdownRef = useRef<HTMLDivElement>(null)
 
 	const [isOpen, setIsOpen] = useState(false)
-	console.log("direction", direction)
+	// console.log("direction", direction)
 
 	const [xPos, setXPos] = useState("")
 
@@ -45,13 +48,13 @@ export default function Dropdown({
 		// })
 		if (isOpen) {
 			const windowWidth = window.innerWidth
-			console.log("windowWidth", windowWidth)
+			// console.log("windowWidth", windowWidth)
 			const isDropdownOverlap =
 				(dropdownRef?.current?.getBoundingClientRect()?.right ?? 0) >=
 				windowWidth
-			console.log("unsa man jd", isDropdownOverlap)
+			// console.log("unsa man jd", isDropdownOverlap)
 			if (isDropdownOverlap) {
-				console.log("yess ======= end")
+				// console.log("yess ======= end")
 				setXPos("end")
 			} else {
 				setXPos("start")
@@ -72,20 +75,20 @@ export default function Dropdown({
 		} else {
 			setIsOpen(true)
 
-			console.log("inside")
+			// console.log("inside")
 		}
 	}
 
-	console.log("isOpen", isOpen, "xPos", xPos)
+	// console.log("isOpen", isOpen, "xPos", xPos)
 
-	const render = trigger?.({ isOpen: isOpen, setIsOpen: setIsOpen })
+	const renderTrigger = trigger?.({ isOpen: isOpen, setIsOpen: setIsOpen })
 
 	return (
 		<div
 			ref={ref}
 			className={`relative inline-block ${size} ${className}`}
 		>
-			{render}
+			{renderTrigger}
 			{/* {trigger && ) => trigger({ isOpen, setIsOpen })} */}
 			{isOpen && (
 				<div
@@ -100,7 +103,7 @@ export default function Dropdown({
 						classes.size[size]
 					}`}
 				>
-					{children}
+					{children ? children : content?.({ isOpen, setIsOpen })}
 				</div>
 			)}
 		</div>

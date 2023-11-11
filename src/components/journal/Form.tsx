@@ -7,8 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 
 // import AsyncSelect from "react-select/async"
-import * as locale from "date-fns/locale"
-import DatePicker, { registerLocale } from "react-datepicker"
+import DatePicker from "react-datepicker"
 
 import "react-datepicker/dist/react-datepicker.css"
 
@@ -23,8 +22,8 @@ import {
 	DatePickerInput,
 	Alert,
 	Button,
+	DatePickerWrapper,
 } from "../../ui"
-import { getDateFnsLocale } from "../../helpers"
 import { AppContext } from "../../AppContext"
 // import { AppContext } from "../../AppContext"
 
@@ -145,12 +144,6 @@ export default function JournalForm() {
 		}
 
 		loadAccountItems()
-		console.log(
-			"getDateFnsLocale(user?.locale) as unknown as keyof typeof locale",
-			getDateFnsLocale(user?.locale) as unknown as keyof typeof locale
-		)
-
-		registerLocale(user?.locale as string, getDateFnsLocale(user?.locale))
 	}, [])
 
 	const onSubmit = async (data: Schema | SubmitSchema) => {
@@ -190,27 +183,31 @@ export default function JournalForm() {
 				<CardBody>
 					<FormProvider {...methods}>
 						<form onSubmit={handleSubmit(onSubmit)}>
-							<DatePicker
-								// {...(register("date"), { valueAsDate: true })}
-								selected={
-									typeof watchDate === "string"
-										? new Date(watchDate)
-										: watchDate
-								}
-								onChange={(date: Date) => {
-									setValue("date", date, { shouldDirty: true })
-								}}
-								showTimeSelect
-								locale={user?.locale as string}
-								dateFormat="Pp"
-								wrapperClassName="w-full"
-								customInput={
-									<DatePickerInput
-										id="date"
-										label="Date"
-										errors={errors}
+							<DatePickerWrapper
+								render={({ userLocale }) => (
+									<DatePicker
+										// {...(register("date"), { valueAsDate: true })}
+										selected={
+											typeof watchDate === "string"
+												? new Date(watchDate)
+												: watchDate
+										}
+										onChange={(date: Date) => {
+											setValue("date", date, { shouldDirty: true })
+										}}
+										showTimeSelect
+										locale={userLocale}
+										dateFormat="Pp"
+										wrapperClassName="w-full"
+										customInput={
+											<DatePickerInput
+												id="date"
+												label="Date"
+												errors={errors}
+											/>
+										}
 									/>
-								}
+								)}
 							/>
 							<AsyncSelect
 								unstyled

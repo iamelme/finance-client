@@ -83,7 +83,7 @@ export default function Header() {
 				</NavLink>
 				<Dropdown
 					direction="end"
-					onClickOutside={(e) => console.log("e outside", e)}
+					// onClickOutside={(e) => console.log("e outside", e)}
 					trigger={(props) => {
 						console.log("trigger props", props)
 						return (
