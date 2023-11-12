@@ -53,7 +53,7 @@ export default function AccountItemForm() {
 			  }
 			: {
 					name: "",
-					type: "",
+					type: "Revenue",
 			  },
 		resolver: zodResolver(schema),
 	})
@@ -110,7 +110,6 @@ export default function AccountItemForm() {
 									id="Revenue"
 									value="Revenue"
 									register={register}
-									errors={errors}
 								/>
 								<Input
 									type="radio"
@@ -120,8 +119,10 @@ export default function AccountItemForm() {
 									value="Expense"
 									className="ml-3"
 									register={register}
-									errors={errors}
 								/>
+								{errors?.["type"]?.message && (
+									<p className="mt-1 text-sm text-red-500">{`${errors?.["type"]?.message}`}</p>
+								)}
 								{/* <input type="checkbox" name="type" id="type" {...regi} /> */}
 							</div>
 							<Input

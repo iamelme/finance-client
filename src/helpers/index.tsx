@@ -4,7 +4,7 @@ import countryList from "country-list"
 
 import * as Locales from "date-fns/locale"
 
-import { AppContext } from "../AppContext"
+import { AppContext } from "../context/AppContext"
 
 export function parseJwt(token: string) {
 	try {

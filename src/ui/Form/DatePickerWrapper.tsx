@@ -1,5 +1,5 @@
 import { useContext, useEffect } from "react"
-import { AppContext } from "../../AppContext"
+import { AppContext } from "../../context/AppContext"
 import { registerLocale } from "react-datepicker"
 import { getDateFnsLocale } from "../../helpers"
 

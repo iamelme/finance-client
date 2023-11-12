@@ -1,7 +1,7 @@
 import { useContext, useEffect } from "react"
 import instAxios from "../api"
 import useRefreshToken from "./useRefreshToken"
-import { AppContext } from "../AppContext"
+import { AppContext } from "../context/AppContext"
 
 export default function useAxios() {
 	const context = useContext(AppContext)

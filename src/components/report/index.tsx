@@ -1,4 +1,4 @@
-import { LegacyRef, MutableRefObject, useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import * as d3 from "d3"
 import useAxios from "../../hooks/useAxios"
 
@@ -17,6 +17,7 @@ import useAxios from "../../hooks/useAxios"
 // import { Calendar } from "react-feather"
 import Filter, { FilterType } from "./Filter"
 import { CurrencyFormatter } from "../../helpers"
+import { Card, CardBody } from "../../ui"
 
 const highestAmount = (groupReport) =>
 	Object.keys(groupReport)?.reduce((acc, key) => {
@@ -50,7 +51,7 @@ const monthOptions = [
 ]
 
 const margin = { top: 30, right: 20, bottom: 30, left: 50 },
-	width = 800 - margin.right,
+	width = 600 - margin.right,
 	height = 500 - margin.top - margin.bottom
 
 export default function Report() {
@@ -329,9 +330,14 @@ export default function Report() {
 					onChange={(newFilter) => setFilter({ ...filter, ...newFilter })}
 				/>
 			</header>
-			<svg ref={refSvg}>
-				<g ref={refGroup} />
-			</svg>
+			<Card className="my-4">
+				<CardBody>
+					<svg ref={refSvg}>
+						<g ref={refGroup} />
+					</svg>
+				</CardBody>
+			</Card>
+
 			<div className="flex">
 				<div className="flex-1">
 					{report?.map((report, idx) => {
@@ -339,7 +345,7 @@ export default function Report() {
 							return (
 								<div key={idx}>
 									<div>
-										{monthOptions[report.month]} {report.year} -
+										{monthOptions[report.month - 1]} {report.year} -
 										<CurrencyFormatter value={report.monthly_total} />
 									</div>
 									<div></div>
@@ -353,7 +359,7 @@ export default function Report() {
 							return (
 								<div key={idx}>
 									<div>
-										{monthOptions[report.month]} {report.year} -
+										{monthOptions[report.month - 1]} {report.year} -
 										<CurrencyFormatter value={report.monthly_total} />
 									</div>
 								</div>

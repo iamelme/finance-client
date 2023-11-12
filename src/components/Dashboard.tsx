@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react"
 import { Link, Outlet } from "react-router-dom"
 import instAxios from "../api"
-import { AppContext } from "../AppContext"
+import { AppContext } from "../context/AppContext"
 import useAxios from "../hooks/useAxios"
 import { UserType } from "../types"
 

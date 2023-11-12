@@ -11,7 +11,8 @@ import {
 import { JournalType } from "../../types"
 import { Button, Card, CardBody, Dropdown, Pagination } from "../../ui"
 import ReactDatePicker, { registerLocale } from "react-datepicker"
-import { AppContext } from "../../AppContext"
+import { AppContext } from "../../context/AppContext"
+import { addYears, subDays, subYears } from "date-fns"
 
 export function bgType(type: string) {
 	if (type === "Revenue") return "bg-green-200 text-green-800"
@@ -154,6 +155,7 @@ export default function List() {
 						<ReactDatePicker
 							selected={filter.startDate}
 							placeholderText="From Date"
+							minDate={subYears(new Date(), 1)}
 							maxDate={filter.endDate}
 							showTimeSelect
 							locale={user?.locale as string}
@@ -173,6 +175,7 @@ export default function List() {
 							selected={filter.endDate}
 							placeholderText="To Date"
 							minDate={filter.startDate}
+							maxDate={addYears(subDays(filter.startDate || new Date(), 1), 1)}
 							showTimeSelect
 							locale={user?.locale as string}
 							dateFormat="Pp"

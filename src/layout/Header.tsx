@@ -1,9 +1,10 @@
 import { useContext, useState } from "react"
 import { NavLink, useNavigate } from "react-router-dom"
-import { AppContext } from "../AppContext"
+import { AppContext } from "../context/AppContext"
 import { Button } from "../ui"
 import Dropdown from "../ui/Dropdown"
 import useAxios from "../hooks/useAxios"
+import { ChevronDown, Plus } from "react-feather"
 
 export default function Header() {
 	const context = useContext(AppContext)
@@ -46,9 +47,8 @@ export default function Header() {
 		user?.roles?.includes("admin") || user?.roles?.includes("super-admin")
 
 	return (
-		<header className="sticky top-0 z-10 flex justify-between sm:px-2 md:px-14 py-4 bg-white shadow">
-			<h1>Header</h1>
-			<nav className="font-bold">
+		<header className="sticky top-0 z-10 flex justify-end sm:px-2 md:px-14 py-4 bg-white border-b border-b-slate-200">
+			<nav className="flex items-center font-bold px-5">
 				{isAdmin && (
 					<NavLink
 						to="/dashboard"
@@ -87,9 +87,57 @@ export default function Header() {
 					trigger={(props) => {
 						console.log("trigger props", props)
 						return (
-							<div className="cursor-pointer">
-								{user?.id && `${user?.firstName} ${user?.lastName}`}
-							</div>
+							<Button
+								variant="pill"
+								className="h-[2rem] mr-2"
+							>
+								<Plus size={16} />
+							</Button>
+						)
+					}}
+					content={({ setIsOpen }) => (
+						<div>
+							<ul>
+								<li>
+									<NavLink
+										to="/dashboard/account/add"
+										className={(isActive) =>
+											isActive ? "mr-2 text-bold" : "mr-2"
+										}
+										onClick={() => setIsOpen(false)}
+									>
+										Add Account
+									</NavLink>
+								</li>
+								<li>
+									<NavLink
+										to="/dashboard/journal/add"
+										className={(isActive) =>
+											isActive ? "mr-2 text-bold" : "mr-2"
+										}
+										onClick={() => setIsOpen(false)}
+									>
+										Add Journal
+									</NavLink>
+								</li>
+							</ul>
+						</div>
+					)}
+				/>
+
+				<Dropdown
+					direction="end"
+					// onClickOutside={(e) => console.log("e outside", e)}
+					trigger={(props) => {
+						console.log("trigger props", props)
+						return (
+							<Button
+								variant="ghost"
+								className="font-bold"
+							>
+								{user?.id && `${user?.firstName} ${user?.lastName}`}{" "}
+								<ChevronDown size={11} />
+							</Button>
 						)
 					}}
 				>

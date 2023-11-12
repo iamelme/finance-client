@@ -10,6 +10,12 @@ import {
 	endOfYear,
 	startOfYear,
 	isSameDay,
+	subYears,
+	subQuarters,
+	subMonths,
+	subWeeks,
+	addYears,
+	subDays,
 } from "date-fns"
 import { DateFormatter } from "../../helpers"
 import useAxios from "../../hooks/useAxios"
@@ -105,7 +111,7 @@ export default function Filter(props: FilterProps) {
 						return (
 							<div className="w-[20rem]">
 								<ul>
-									<li>This week</li>
+									{/* <li>This week</li> */}
 									<li
 										onClick={() => {
 											onChange({
@@ -115,12 +121,12 @@ export default function Filter(props: FilterProps) {
 											})
 											// setStartDate(startOfMonth(new Date()))
 											// setEndDate(endOfMonth(new Date()))
-											setDateRange("This month")
+											setDateRange("This Month")
 											setIsOpen(false)
 										}}
 										className="flex justify-between"
 									>
-										<div>This month </div>
+										<div>This Month</div>
 										<div>
 											{DateFormatter({
 												value: `${startOfMonth(new Date()).toISOString()}`,
@@ -140,14 +146,12 @@ export default function Filter(props: FilterProps) {
 												startDate: startOfQuarter(new Date()),
 												endDate: endOfQuarter(new Date()),
 											})
-											// setStartDate(startOfQuarter(new Date()))
-											// setEndDate(endOfQuarter(new Date()))
-											setDateRange("This quarter")
+											setDateRange("This Quarter")
 											setIsOpen(false)
 										}}
 										className="flex justify-between"
 									>
-										<div>This quarter</div>
+										<div>This Quarter</div>
 										<div>
 											{DateFormatter({
 												value: `${startOfQuarter(new Date()).toISOString()}`,
@@ -167,14 +171,12 @@ export default function Filter(props: FilterProps) {
 												startDate: startOfYear(new Date()),
 												endDate: endOfYear(new Date()),
 											})
-											// setStartDate(startOfYear(new Date()))
-											// setEndDate(endOfYear(new Date()))
-											setDateRange("This year")
+											setDateRange("This Year")
 											setIsOpen(false)
 										}}
 										className="flex justify-between"
 									>
-										<div>This year</div>
+										<div>This Year</div>
 										<div>
 											{DateFormatter({
 												value: `${startOfYear(new Date()).toISOString()}`,
@@ -188,11 +190,108 @@ export default function Filter(props: FilterProps) {
 										</div>
 									</li>
 								</ul>
+								<hr />
 								<ul>
-									<li>Last week</li>
-									<li>Last month</li>
-									<li>Last quarter</li>
-									<li onClick={() => setIsOpen(!isOpen)}>Last year</li>
+									{/* <li
+										onClick={() => {
+											onChange({
+												...filter,
+												startDate: subWeeks(new Date(), 1),
+												endDate: new Date(),
+											})
+											setDateRange("Last Week")
+											setIsOpen(false)
+										}}
+										className="flex justify-between"
+									>
+										<div>Last Week</div>
+										<div>
+											{DateFormatter({
+												value: `${subWeeks(new Date(), 1).toISOString()}`,
+												showTime: false,
+											})}
+											{` - `}
+											{DateFormatter({
+												value: `${new Date().toISOString()}`,
+												showTime: false,
+											})}
+										</div>
+									</li> */}
+									<li
+										onClick={() => {
+											onChange({
+												...filter,
+												startDate: subMonths(new Date(), 1),
+												endDate: new Date(),
+											})
+											setDateRange("Last Month")
+											setIsOpen(false)
+										}}
+										className="flex justify-between"
+									>
+										<div>Last Month</div>
+										<div>
+											{DateFormatter({
+												value: `${subMonths(new Date(), 1).toISOString()}`,
+												showTime: false,
+											})}
+											{` - `}
+											{DateFormatter({
+												value: `${new Date().toISOString()}`,
+												showTime: false,
+											})}
+										</div>
+									</li>
+									<li
+										onClick={() => {
+											onChange({
+												...filter,
+												startDate: subQuarters(new Date(), 1),
+												endDate: new Date(),
+											})
+											setDateRange("Last Quarter")
+											setIsOpen(false)
+										}}
+										className="flex justify-between"
+									>
+										<div>Last Quarter</div>
+										<div>
+											{DateFormatter({
+												value: `${subQuarters(new Date(), 1).toISOString()}`,
+												showTime: false,
+											})}
+											{` - `}
+											{DateFormatter({
+												value: `${new Date().toISOString()}`,
+												showTime: false,
+											})}
+										</div>
+									</li>
+									<li
+										onClick={() => {
+											onChange({
+												...filter,
+												startDate: subYears(new Date(), 1),
+												endDate: new Date(),
+											})
+											setDateRange("Last Year")
+											setIsOpen(false)
+										}}
+										className="flex justify-between"
+									>
+										<div>Last Year</div>
+										<div>
+											{DateFormatter({
+												value: `${subYears(new Date(), 1).toISOString()}`,
+												showTime: false,
+											})}
+											{` - `}
+											{DateFormatter({
+												value: `${new Date().toISOString()}`,
+												showTime: false,
+											})}
+										</div>
+									</li>
 								</ul>
 							</div>
 						)
@@ -227,6 +326,7 @@ export default function Filter(props: FilterProps) {
 						<ReactDatePicker
 							selected={startDate}
 							placeholderText="From Date"
+							minDate={subYears(new Date(), 1)}
 							maxDate={endDate}
 							showTimeSelect
 							locale={userLocale}
@@ -253,6 +353,7 @@ export default function Filter(props: FilterProps) {
 							selected={endDate}
 							placeholderText="To Date"
 							minDate={startDate}
+							maxDate={addYears(subDays(startDate || new Date(), 1), 1)}
 							showTimeSelect
 							locale={userLocale}
 							dateFormat="Pp"

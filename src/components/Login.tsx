@@ -1,7 +1,7 @@
 import { useState, useContext } from "react"
 
 import axios from "../api"
-import { AppContext } from "../AppContext"
+import { AppContext } from "../context/AppContext"
 import { FormProvider, useForm } from "react-hook-form"
 
 import { z } from "zod"

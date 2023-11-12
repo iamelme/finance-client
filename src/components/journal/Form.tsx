@@ -24,7 +24,7 @@ import {
 	Button,
 	DatePickerWrapper,
 } from "../../ui"
-import { AppContext } from "../../AppContext"
+import { AppContext } from "../../context/AppContext"
 // import { AppContext } from "../../AppContext"
 
 const schema = z.object({

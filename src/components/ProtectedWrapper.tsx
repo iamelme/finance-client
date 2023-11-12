@@ -1,7 +1,7 @@
 import { useContext } from "react"
 import { Navigate, Outlet, useLocation } from "react-router-dom"
 
-import { AppContext } from "../AppContext"
+import { AppContext } from "../context/AppContext"
 // import axios from "../api"
 
 export default function ProtectedWrapper() {
