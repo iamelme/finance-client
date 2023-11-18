@@ -7,7 +7,13 @@ export default {
 		"./src/ui/**/*.{html,tsx}",
 	],
 	theme: {
-		extend: {},
+		extend: {
+			colors: {
+				dark: "rgb(13, 16, 19)",
+				accent: "rgb(17, 24, 31)",
+				border: "rgb(34, 41, 54)",
+			},
+		},
 		fontFamily: {
 			sans: ['"Nunito Sans"', "sans-serif"],
 		},

@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react"
-import { Outlet, useNavigate } from "react-router-dom"
+import { Outlet, useNavigate, useSearchParams } from "react-router-dom"
 import { Plus, Edit, Filter } from "react-feather"
 
 import useAxios from "../../hooks/useAxios"
@@ -41,7 +41,7 @@ export default function List() {
 		endDate: null,
 		sort: "DESC",
 		type: ["Revenue", "Expense"],
-		limit: 5,
+		limit: 25,
 		totalItems: 0,
 		offset: 0,
 	})
@@ -49,6 +49,8 @@ export default function List() {
 
 	const searchQuery = new URLSearchParams(window.location.search)
 	const pageQuery = searchQuery.get("page")
+
+	const [searchParams, setSearchParams] = useSearchParams()
 
 	// const [startDate, setStartDate] = useState<Date | null>(null)
 	// const [endDate, setEndDate] = useState<Date | null>(null)
@@ -144,6 +146,9 @@ export default function List() {
 				placeholder="Search journal..."
 				onChange={(e) => {
 					setFilter({ ...filter, [e.target.name]: e.target.value })
+					setSearchParams({
+						page: "1",
+					})
 					setIsLoading(true)
 				}}
 			/>
@@ -299,7 +304,7 @@ export default function List() {
 						</div>
 					</Dropdown>
 					<div className="inline-block">
-						<Button onClick={() => navigate("/dashboard/journal/add")}>
+						<Button onClick={() => navigate("/journal/add")}>
 							<Plus
 								className="mr-1 leading-3	"
 								size={11}
@@ -369,9 +374,7 @@ export default function List() {
 											variant="ghost"
 											color="secondary"
 											aria-label="Edit"
-											onClick={() =>
-												navigate(`/dashboard/journal/${journal.id}`)
-											}
+											onClick={() => navigate(`/journal/${journal.id}`)}
 										>
 											<Edit
 												size={11}

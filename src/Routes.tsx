@@ -8,20 +8,22 @@ import {
 
 import ProtectedWrapper from "./components/ProtectedWrapper"
 import Container from "./layout/Content"
-import Login from "./components/Login"
+import Login from "./Pages/Login"
 import Root from "./components/"
 import Journal from "./components/journal"
 import JournalForm from "./components/journal/Form"
 import AccountItemForm from "./components/account/Form"
 import AccountItem from "./components/account"
-import Register from "./components/Register"
+import Register from "./Pages/Register"
 import Report from "./components/report"
+import DashboardLayout from "./layout/Dashboard"
+import Dashboard from "./Pages/Dashboard"
 
 export default function Routes() {
 	return (
 		<Router>
 			<Route
-				path="/"
+				path="/home"
 				element={
 					<div>
 						Hello world! <Link to="/login">Login</Link>{" "}
@@ -31,26 +33,28 @@ export default function Routes() {
 					</div>
 				}
 			/>
-
 			<Route
-				path="/login"
+				path="login"
 				element={<Login />}
 			/>
 			<Route
-				path="/register"
+				path="register"
 				element={<Register />}
 			/>
-			<Route element={<Container />}>
-				<Route element={<ProtectedWrapper />}>
-					<Route
-						path="dashboard"
-						element={<Root />}
-					>
+			<Route element={<ProtectedWrapper />}>
+				<Route
+					path="/"
+					element={<DashboardLayout />}
+				>
+					<Route element={<Container />}>
+						<Route
+							path=""
+							element={<Dashboard />}
+						/>
 						<Route
 							path="report"
 							element={<Report />}
 						/>
-
 						<Route
 							path="journal"
 							element={<Root />}

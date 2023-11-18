@@ -51,7 +51,7 @@ export default function Header() {
 			<nav className="flex items-center font-bold px-5">
 				{isAdmin && (
 					<NavLink
-						to="/dashboard"
+						to="/"
 						className={(isActive) => (isActive ? "mr-2 text-bold" : "mr-2")}
 					>
 						Dashboard
@@ -64,19 +64,19 @@ export default function Header() {
 					Home
 				</NavLink>
 				<NavLink
-					to="/dashboard/account"
+					to="/account"
 					className={(isActive) => (isActive ? "mr-2 text-bold" : "mr-2")}
 				>
 					Account
 				</NavLink>
 				<NavLink
-					to="/dashboard/report"
+					to="/report"
 					className={(isActive) => (isActive ? "mr-2 text-bold" : "mr-2")}
 				>
 					Report
 				</NavLink>
 				<NavLink
-					to="/dashboard/journal"
+					to="/journal"
 					className={(isActive) => (isActive ? "mr-2 text-bold" : "mr-2")}
 				>
 					Journal
@@ -100,7 +100,7 @@ export default function Header() {
 							<ul>
 								<li>
 									<NavLink
-										to="/dashboard/account/add"
+										to="/account/add"
 										className={(isActive) =>
 											isActive ? "mr-2 text-bold" : "mr-2"
 										}
@@ -111,7 +111,7 @@ export default function Header() {
 								</li>
 								<li>
 									<NavLink
-										to="/dashboard/journal/add"
+										to="/journal/add"
 										className={(isActive) =>
 											isActive ? "mr-2 text-bold" : "mr-2"
 										}
@@ -144,26 +144,6 @@ export default function Header() {
 					<div>
 						<ul>
 							<li>
-								<NavLink
-									to="/dashboard/account"
-									className={(isActive) =>
-										isActive ? "mr-2 text-bold" : "mr-2"
-									}
-								>
-									Account
-								</NavLink>
-							</li>
-							<li>
-								<NavLink
-									to="/dashboard/journal"
-									className={(isActive) =>
-										isActive ? "mr-2 text-bold" : "mr-2"
-									}
-								>
-									Journal
-								</NavLink>
-							</li>
-							<li>
 								<Button
 									variant="ghost"
 									onClick={handleLogout}
@@ -184,7 +164,7 @@ export default function Header() {
 							<ul>
 								<li>
 									<NavLink
-										to="/dashboard/account"
+										to="/account"
 										className={(isActive) =>
 											isActive ? "mr-2 text-bold" : "mr-2"
 										}
@@ -194,7 +174,7 @@ export default function Header() {
 								</li>
 								<li>
 									<NavLink
-										to="/dashboard/journal"
+										to="/journal"
 										className={(isActive) =>
 											isActive ? "mr-2 text-bold" : "mr-2"
 										}

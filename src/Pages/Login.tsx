@@ -94,7 +94,7 @@ export default function Login() {
 			})
 
 			navigate(to, { replace: true })
-		} catch (e) {
+		} catch (e: unknown) {
 			console.error(e)
 			setErrorMessage(e?.response?.data ?? "An error occurred")
 		}

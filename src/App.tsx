@@ -17,7 +17,7 @@ import AppProvider from "./context/AppContext"
 // import Register from "./components/Register"
 // import Report from "./components/report"
 
-import Layout from "./layout"
+import Layout from "./layout/layout-w-sidebar"
 
 export default function App() {
 	return (

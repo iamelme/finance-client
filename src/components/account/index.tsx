@@ -99,7 +99,7 @@ export default function AccountItem() {
 				<h2 className="text-xl">Account</h2>
 
 				<div>
-					<Button onClick={() => navigate("/dashboard/account/add")}>
+					<Button onClick={() => navigate("/account/add")}>
 						<Plus
 							className="mr-1 leading-3	"
 							size={12}
@@ -156,7 +156,7 @@ export default function AccountItem() {
 										<Button
 											variant="ghost"
 											color="secondary"
-											onClick={() => navigate(`/dashboard/account/${item.id}`)}
+											onClick={() => navigate(`/account/${item.id}`)}
 										>
 											<Edit
 												size={11}

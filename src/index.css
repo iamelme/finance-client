@@ -1,3 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+	:root {
+		/* // bg #11181f
+    // bg #0d1013
+    // #222936 */
+	}
+
+	@media (prefers-color-scheme: dark) {
+		:root {
+			--color-dark: rgb(13, 16, 19);
+			--color-accent: rgb(17, 24, 31);
+			--color-border: rgb(34, 41, 54);
+		}
+	}
+}
