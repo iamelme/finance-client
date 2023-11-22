@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react"
 import { Outlet, useNavigate, useSearchParams } from "react-router-dom"
-import { Plus, Edit, Filter } from "react-feather"
+import { ChevronDown, Edit } from "react-feather"
 
 import useAxios from "../../hooks/useAxios"
 import {
@@ -9,16 +9,33 @@ import {
 	getDateFnsLocale,
 } from "../../helpers"
 import { JournalType } from "../../types"
-import { Button, Card, CardBody, Dropdown, Pagination } from "../../ui"
-import ReactDatePicker, { registerLocale } from "react-datepicker"
+import { Button, Card, CardBody, Pagination } from "../../ui"
+import { registerLocale } from "react-datepicker"
 import { AppContext } from "../../context/AppContext"
-import { addYears, subDays, subYears } from "date-fns"
+import Filter from "./Filter"
 
 export function bgType(type: string) {
-	if (type === "Revenue") return "bg-green-200 text-green-800"
+	if (type === "Revenue") return "bg-emerald-100 text-emerald-500"
 
-	return "bg-rose-200 text-rose-800"
+	return "bg-rose-200 text-rose-500"
 }
+
+const initialFilter = {
+	searchText: "",
+	startDate: null,
+	endDate: null,
+	sort: "DESC",
+	sortBy: "date",
+	type: ["Revenue", "Expense"],
+	limit: 25,
+	totalItems: 0,
+	offset: 0,
+}
+export type FilterDataType = Omit<
+	typeof initialFilter,
+	"startDate" | "endDate"
+> & { startDate: Date | null; endDate: Date | null }
+
 export default function List() {
 	const context = useContext(AppContext)
 	const { user } = context || {}
@@ -26,31 +43,13 @@ export default function List() {
 	const [isLoading, setIsLoading] = useState(true)
 	const [selected, setSelected] = useState<Record<string, boolean>>({})
 
-	const [filter, setFilter] = useState<{
-		type: string[]
-		startDate: Date | null
-		endDate: Date | null
-		sort: string
-		searchText: string
-		limit: number
-		totalItems: number
-		offset: number
-	}>({
-		searchText: "",
-		startDate: null,
-		endDate: null,
-		sort: "DESC",
-		type: ["Revenue", "Expense"],
-		limit: 25,
-		totalItems: 0,
-		offset: 0,
-	})
+	const [filter, setFilter] = useState<FilterDataType>(initialFilter)
 	const navigate = useNavigate()
 
 	const searchQuery = new URLSearchParams(window.location.search)
 	const pageQuery = searchQuery.get("page")
 
-	const [searchParams, setSearchParams] = useSearchParams()
+	const [, setSearchParams] = useSearchParams()
 
 	// const [startDate, setStartDate] = useState<Date | null>(null)
 	// const [endDate, setEndDate] = useState<Date | null>(null)
@@ -64,6 +63,7 @@ export default function List() {
 					startDate: filter.startDate,
 					endDate: filter.endDate,
 					sort: filter.sort,
+					sortBy: filter.sortBy,
 					type: filter.type,
 					limit: filter.limit,
 					offset:
@@ -128,6 +128,15 @@ export default function List() {
 		setSelected({})
 	}
 
+	const handleSort = (value: string) => {
+		setIsLoading(true)
+		setFilter({
+			...filter,
+			sortBy: value,
+			sort: filter.sort === "DESC" ? "ASC" : "DESC",
+		})
+	}
+
 	console.log("filter", filter)
 	// console.log("selected", selected)
 
@@ -138,182 +147,32 @@ export default function List() {
 
 	// const offset =
 	// 	Number(pageQuery) > 0 ? (Number(pageQuery) - 1) * filter.limit : 0
+
+	const sortClass = (value: string) =>
+		value === "DESC" ? "rotate-0" : "rotate-180"
 	return (
 		<>
-			<input
-				className="w-full px-4 py-1 bg-white border border-slate-300 rounded text-sm"
-				name="searchText"
-				placeholder="Search journal..."
-				onChange={(e) => {
-					setFilter({ ...filter, [e.target.name]: e.target.value })
-					setSearchParams({
-						page: "1",
-					})
-					setIsLoading(true)
-				}}
-			/>
 			<header className="flex justify-between my-5">
 				<h2 className="text-xl">Journal</h2>
 
-				<div className="flex ">
-					<div className="mr-2">
-						<ReactDatePicker
-							selected={filter.startDate}
-							placeholderText="From Date"
-							minDate={subYears(new Date(), 1)}
-							maxDate={filter.endDate}
-							showTimeSelect
-							locale={user?.locale as string}
-							dateFormat="Pp"
-							onChange={(date) => {
-								// setStartDate(date)
-								setFilter({ ...filter, startDate: date as Date })
-								setIsLoading(true)
-							}}
-							customInput={
-								<input className="w-full px-4 py-1 bg-white border border-slate-300 rounded text-sm" />
-							}
-						/>
-					</div>
-					<div className="mr-2">
-						<ReactDatePicker
-							selected={filter.endDate}
-							placeholderText="To Date"
-							minDate={filter.startDate}
-							maxDate={addYears(subDays(filter.startDate || new Date(), 1), 1)}
-							showTimeSelect
-							locale={user?.locale as string}
-							dateFormat="Pp"
-							onChange={(date) => {
-								// setEndDate(date)
-								setFilter({ ...filter, endDate: date as Date })
-								setIsLoading(true)
-							}}
-							customInput={
-								<input className="w-full px-4 py-1 bg-white border border-slate-300 rounded text-sm" />
-							}
-						/>
-					</div>
-					<Dropdown
-						direction="end"
-						// onClickOutside={(e) => console.log("e outside", e)}
-						trigger={(props) => {
-							const { isOpen } = props
-							console.log("trigger props", props)
-							return (
-								<Button
-									variant="outline"
-									color="secondary"
-									className={`${isOpen ? "bg-slate-200" : ""}`}
-								>
-									<Filter
-										size={11}
-										className="mr-1"
-									/>{" "}
-									Filter
-								</Button>
-							)
-						}}
-						className="mr-2"
-					>
-						<div>
-							Sort by
-							<div>
-								<label htmlFor="desc">
-									<input
-										type="radio"
-										name="sort"
-										id="desc"
-										value="DESC"
-										checked={filter.sort === "DESC"}
-										onChange={(e) => {
-											setFilter({
-												...filter,
-												sort: e.target.value,
-											})
-											setIsLoading(true)
-										}}
-									/>{" "}
-									Newest
-								</label>
-								<label htmlFor="asc">
-									<input
-										type="radio"
-										name="sort"
-										id="asc"
-										value="ASC"
-										checked={filter.sort === "ASC"}
-										onChange={(e) => {
-											setFilter({
-												...filter,
-												sort: e.target.value,
-											})
-											setIsLoading(true)
-										}}
-									/>{" "}
-									Oldest
-								</label>
-							</div>
-							Type
-							<div>
-								<label htmlFor="revenue">
-									<input
-										type="checkbox"
-										name="type"
-										id="revenue"
-										value="Revenue"
-										checked={filter.type.includes("Revenue")}
-										onChange={(e) => {
-											setFilter({
-												...filter,
-												type: e.target.checked
-													? [...filter.type, e.target.value]
-													: filter.type.filter(
-															(type) => type !== e.target.value
-													  ),
-											})
-											setIsLoading(true)
-										}}
-									/>{" "}
-									Revenue
-								</label>
-							</div>
-							<div>
-								<label htmlFor="expense">
-									<input
-										type="checkbox"
-										name="type"
-										id="expense"
-										value="Expense"
-										checked={filter.type.includes("Expense")}
-										onChange={(e) => {
-											setFilter({
-												...filter,
-												type: e.target.checked
-													? [...filter.type, e.target.value]
-													: filter.type.filter(
-															(type) => type !== e.target.value
-													  ),
-											})
-											setIsLoading(true)
-										}}
-									/>{" "}
-									Expense
-								</label>
-							</div>
-						</div>
-					</Dropdown>
-					<div className="inline-block">
-						<Button onClick={() => navigate("/journal/add")}>
-							<Plus
-								className="mr-1 leading-3	"
-								size={11}
-								strokeWidth={3}
-							/>
-							Add
-						</Button>
-					</div>
-				</div>
+				<input
+					className="w-[20rem] px-4 py-1 bg-accent border border-theme-border rounded text-sm"
+					name="searchText"
+					placeholder="Search"
+					onChange={(e) => {
+						setFilter({ ...filter, [e.target.name]: e.target.value })
+						setSearchParams({
+							page: "1",
+						})
+						setIsLoading(true)
+					}}
+				/>
+				<Filter
+					locale={user?.locale as string}
+					filter={filter}
+					onChange={setFilter}
+					onIsLoading={setIsLoading}
+				/>
 			</header>
 			<Card className="mb-3">
 				<CardBody>
@@ -327,9 +186,39 @@ export default function List() {
 										onChange={handleToggleAll}
 									/>
 								</th>
-								<th className="p-2 text-sm uppercase">Date</th>
+								<th
+									className="p-2 text-sm uppercase cursor-pointer"
+									onClick={() => handleSort("date")}
+								>
+									<span className="flex items-center">
+										<span>Date</span>
+										{filter.sortBy === "date" && (
+											<ChevronDown
+												size={11}
+												className={`ml-1 ease-in-out duration-300 transform ${sortClass(
+													filter.sort
+												)}`}
+											/>
+										)}
+									</span>
+								</th>
 								<th className="p-2 text-sm uppercase">Account</th>
-								<th className="p-2 text-sm uppercase text-right">Amount</th>
+								<th
+									className="p-2 text-sm uppercase text-right cursor-pointer"
+									onClick={() => handleSort("amount")}
+								>
+									<span className="flex items-center">
+										<span>Amount</span>
+										{filter.sortBy === "amount" && (
+											<ChevronDown
+												size={11}
+												className={`ml-1 ease-in-out duration-300 transform ${sortClass(
+													filter.sort
+												)}`}
+											/>
+										)}
+									</span>
+								</th>
 								<th className="p-2 text-sm uppercase w-[35%]">Note</th>
 								<th></th>
 							</tr>
@@ -337,7 +226,7 @@ export default function List() {
 						<tbody>
 							{journals.map((journal: JournalType) => (
 								<tr key={journal.id}>
-									<td className="p-2 border-t border-t-slate-200">
+									<td className="p-2 border-t border-theme-border">
 										<input
 											type="checkbox"
 											checked={selected[journal.id] || false}
@@ -349,10 +238,10 @@ export default function List() {
 											}
 										/>
 									</td>
-									<td className="p-2  border-t border-t-slate-200">
+									<td className="p-2  border-t border-theme-border">
 										<DateFormatter value={journal?.date ?? null} />
 									</td>
-									<td className={`p-2  border-t border-t-slate-200  `}>
+									<td className={`p-2  border-t border-theme-border  `}>
 										<div
 											className={`inline-block py-1 px-2 rounded-md ${bgType(
 												journal.account_type
@@ -361,15 +250,15 @@ export default function List() {
 											{journal.account_name}
 										</div>
 									</td>
-									<td className="p-2  border-t border-t-slate-200 text-right ">
+									<td className="p-2  border-t border-theme-border text-right ">
 										<span className="font-bold">
 											<CurrencyFormatter value={journal.amount} />
 										</span>
 									</td>
-									<td className="p-2  border-t border-t-slate-200 text-gray-600">
+									<td className="p-2  border-t border-theme-border text-gray-600">
 										{journal.note}
 									</td>
-									<td className="p-2  border-t border-t-slate-200 text-right">
+									<td className="p-2  border-t border-theme-border text-right">
 										<Button
 											variant="ghost"
 											color="secondary"

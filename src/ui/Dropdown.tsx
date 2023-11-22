@@ -70,6 +70,7 @@ export default function Dropdown({
 
 	const handleClickOutside = (e: MouseEvent) => {
 		if (ref.current && !ref.current.contains(e.target as Node)) {
+			console.log("ref", ref.current)
 			setIsOpen(false)
 			onClickOutside?.("test")
 		} else {
@@ -81,7 +82,7 @@ export default function Dropdown({
 
 	// console.log("isOpen", isOpen, "xPos", xPos)
 
-	const renderTrigger = trigger?.({ isOpen: isOpen, setIsOpen: setIsOpen })
+	const renderTrigger = trigger({ isOpen, setIsOpen })
 
 	return (
 		<div
@@ -99,7 +100,7 @@ export default function Dropdown({
 					}}
 					className={`absolute ${
 						xPos || direction
-					}-0 flex flex-col border border-slate-200 rounded-md shadow-md bg-white z-10 mt-1 p-2 ${
+					}-0 flex flex-col bg-accent  border border-theme-border rounded-md shadow-md z-10 mt-1 p-2 ${
 						classes.size[size]
 					}`}
 				>

@@ -18,20 +18,14 @@ import Register from "./Pages/Register"
 import Report from "./components/report"
 import DashboardLayout from "./layout/Dashboard"
 import Dashboard from "./Pages/Dashboard"
+import Home from "./Pages/Home"
 
 export default function Routes() {
 	return (
 		<Router>
 			<Route
 				path="/home"
-				element={
-					<div>
-						Hello world! <Link to="/login">Login</Link>{" "}
-						<p>
-							<Link to="/dashboard">Dashboard</Link>
-						</p>
-					</div>
-				}
+				element={<Home />}
 			/>
 			<Route
 				path="login"

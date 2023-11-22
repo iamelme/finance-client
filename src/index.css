@@ -7,13 +7,25 @@
 		/* // bg #11181f
     // bg #0d1013
     // #222936 */
+		--color-theme: 250 250 250;
+		--color-accent: 255 255 255;
+		/* --color-accent2: 17 24 31; */
+		--color-theme-border: 237 239 242;
+		--color-content: 148 148 166;
 	}
 
 	@media (prefers-color-scheme: dark) {
 		:root {
-			--color-dark: rgb(13, 16, 19);
-			--color-accent: rgb(17, 24, 31);
-			--color-border: rgb(34, 41, 54);
+			--color-theme: 13 16 19;
+			--color-accent: 17 24 31;
+			--color-theme-border: 34 41 54;
+			--color-content: 148 148 166;
 		}
+	}
+	:root[data-theme="dark"] {
+		--color-theme: 13 16 19;
+		--color-accent: 17 24 31;
+		--color-theme-border: 34 41 54;
+		--color-content: 148 148 166;
 	}
 }

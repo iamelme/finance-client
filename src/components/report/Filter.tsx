@@ -340,7 +340,7 @@ export default function Filter(props: FilterProps) {
 								// setIsLoading(true)
 							}}
 							customInput={
-								<input className="w-full px-4 py-1 bg-white border border-slate-300 rounded text-sm" />
+								<input className="w-full px-4 py-1 bg-accent border border-theme-border rounded text-sm" />
 							}
 						/>
 					)}
@@ -366,7 +366,7 @@ export default function Filter(props: FilterProps) {
 								// setEndDate(date)
 							}}
 							customInput={
-								<input className="w-full px-4 py-1 bg-white border border-slate-300 rounded text-sm" />
+								<input className="w-full px-4 py-1 bg-accent border border-theme-border rounded text-sm" />
 							}
 						/>
 					)}

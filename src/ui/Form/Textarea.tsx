@@ -28,7 +28,7 @@ export default function Textarea({
 				name={name}
 				onChange={onChange}
 				onBlur={onBlur}
-				className={`w-full px-4 py-2 border border-slate-300 rounded ${className}`}
+				className={`w-full px-4 py-2 bg-theme border border-theme-border rounded focus:outline-none ${className}`}
 			></textarea>
 		</div>
 	)

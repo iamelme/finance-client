@@ -6,7 +6,7 @@ export function Card({
 	return (
 		<div
 			{...rest}
-			className={`bg-white rounded-md border border-slate-300 ${className}`}
+			className={`bg-accent rounded-md border border-theme-border ${className}`}
 		>
 			{children}
 		</div>

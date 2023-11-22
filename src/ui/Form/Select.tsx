@@ -14,7 +14,8 @@ import {
 import { ErrorType } from "../../types"
 
 const t = (size: Size) => ({
-	container: () => classNames(`${classes.size.container[size]} bg-white`),
+	container: () =>
+		classNames(`${classes.size.container[size]} bg-theme rounded`),
 	control: ({
 		isDisabled,
 		isFocused,
@@ -25,11 +26,13 @@ const t = (size: Size) => ({
 		menuIsOpen: boolean
 	}) =>
 		classNames(
-			!isDisabled && isFocused && "border-slate-300",
-			isFocused && menuIsOpen && " rounded-b-none border-b-0",
+			!isDisabled && isFocused && "border-theme-border focus:outline-none ",
 			isFocused &&
-				"hover:border-slate-300 hover:rounded-b-none hover:border-b-0",
-			`${classes.size.input[size]} px-4 border border-slate-300 rounded hover:cursor-pointer`
+				menuIsOpen &&
+				" rounded-b-none border-b-0 focus:outline-none ",
+			isFocused &&
+				"hover:border-theme-border hover:rounded-b-none hover:border-b-0 focus:outline-none ",
+			`${classes.size.input[size]} px-4 border border-theme-border rounded hover:cursor-pointer`
 		),
 	option: ({
 		isDisabled,
@@ -46,17 +49,17 @@ const t = (size: Size) => ({
 	}) =>
 		classNames(
 			isSelected && "bg-gray-50",
-			!isSelected && isFocused && "bg-white",
+			!isSelected && isFocused && "bg-accent",
 			!isDisabled && isSelected && "active:bg-white",
 			!isDisabled && !isSelected && "active:bg-white",
-			`px-4 py-2 bg-white border border-t-none border-slate-300 border-b-0 last:border-b last:rounded-b hover:bg-gray-50 hover:cursor-pointer ${
+			`px-4 py-2 bg-accent border border-t-none border-theme-border border-b-0 last:border-b last:rounded-b hover:bg-gray-50 hover:cursor-pointer ${
 				data.type === "Revenue" ? "text-green-500" : "text-red-500"
 			}`
 		),
 
 	noOptionsMessage: () =>
 		classNames(
-			"px-4 py-2 bg-white border border-t-none border-slate-300 border-b-0 last:border-b last:rounded-b "
+			"px-4 py-2 bg-white border border-t-none border-theme-border border-b-0 last:border-b last:rounded-b "
 		),
 })
 

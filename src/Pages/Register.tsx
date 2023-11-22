@@ -93,7 +93,7 @@ export default function RegisterForm() {
 
 	return (
 		<div className="flex flex-col justify-center min-h-[100vh] -mt-[60px]">
-			<div className="w-full max-w-sm mx-auto">
+			<div className="w-[20rem] mx-auto">
 				<h2 className="text-lg mb-3">Registration Form</h2>
 
 				<Card>

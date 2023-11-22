@@ -89,7 +89,7 @@ export const Input = <TFormValues extends Record<string, unknown>>({
 				})}
 				className={`w-full ${classes.size[inputSize]} ${
 					isRadioOrCheckbox ? "mr-1" : ""
-				} border border-slate-300 rounded [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${className}`}
+				} bg-theme border border-theme-border rounded [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none ${className}`}
 			/>
 			{errors && (
 				<ErrorMessage

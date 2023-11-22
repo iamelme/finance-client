@@ -9,9 +9,10 @@ export default {
 	theme: {
 		extend: {
 			colors: {
-				dark: "rgb(13, 16, 19)",
-				accent: "rgb(17, 24, 31)",
-				border: "rgb(34, 41, 54)",
+				theme: "rgb(var(--color-theme) / <alpha-value>)",
+				accent: "rgb(var(--color-accent) / <alpha-value>)",
+				"theme-border": "rgb(var(--color-theme-border) / <alpha-value>)",
+				content: "rgb(var(--color-content) / <alpha-value>)",
 			},
 		},
 		fontFamily: {

@@ -30,7 +30,7 @@ const DatePicker = forwardRef(function DatePickerInput(
 				{...props}
 				name={id}
 				ref={ref}
-				className="w-full px-4 py-2 border border-slate-300 rounded"
+				className="w-full px-4 py-2 bg-theme border border-theme-border rounded focus:outline-none "
 			/>
 			{errors && (
 				<ErrorMessage

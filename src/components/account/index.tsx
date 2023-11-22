@@ -7,9 +7,9 @@ import { Edit, Plus } from "react-feather"
 // import { bgType } from "../../helpers"
 
 export function bgType(type: string) {
-	if (type === "Revenue") return "bg-green-200 text-green-800"
+	if (type === "Revenue") return "bg-emerald-100 text-emerald-500"
 
-	return "bg-red-200 text-red-800"
+	return "bg-rose-100 text-rose-500"
 }
 
 export default function AccountItem() {
@@ -129,7 +129,7 @@ export default function AccountItem() {
 						<tbody>
 							{accounts?.map((item: AccountType) => (
 								<tr key={item.id}>
-									<td className="p-2  border-t border-t-slate-200">
+									<td className="p-2  border-t border-t-theme-border">
 										<input
 											type="checkbox"
 											onChange={(e) =>
@@ -140,10 +140,10 @@ export default function AccountItem() {
 											}
 										/>
 									</td>
-									<td className="p-2  border-t border-t-slate-200">
+									<td className="p-2  border-t border-t-theme-border">
 										{item.name}
 									</td>
-									<td className="p-2  border-t border-t-slate-200">
+									<td className="p-2  border-t border-t-theme-border">
 										<div
 											className={`inline-block py-1 px-2 rounded-md ${bgType(
 												item.type
@@ -152,7 +152,7 @@ export default function AccountItem() {
 											{item.type}
 										</div>
 									</td>
-									<td className="p-2  border-t border-t-slate-200 text-right">
+									<td className="p-2  border-t border-t-theme-border text-right">
 										<Button
 											variant="ghost"
 											color="secondary"

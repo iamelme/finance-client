@@ -1,4 +1,4 @@
-import { useContext, useState } from "react"
+import { useContext } from "react"
 import { NavLink, useNavigate } from "react-router-dom"
 import { AppContext } from "../context/AppContext"
 import { Button } from "../ui"
@@ -13,8 +13,6 @@ export default function Header() {
 	const ax = useAxios()
 
 	const navigate = useNavigate()
-
-	const [isOpen, setIsOpen] = useState(false)
 
 	// console.log("header user context", user)
 
@@ -47,7 +45,7 @@ export default function Header() {
 		user?.roles?.includes("admin") || user?.roles?.includes("super-admin")
 
 	return (
-		<header className="sticky top-0 z-10 flex justify-end sm:px-2 md:px-14 py-4 bg-white border-b border-b-slate-200">
+		<header className="sticky top-0 z-10 flex justify-end sm:px-2 md:px-14 py-4 bg-accent border-b border-b-theme-border">
 			<nav className="flex items-center font-bold px-5">
 				{isAdmin && (
 					<NavLink
@@ -57,30 +55,6 @@ export default function Header() {
 						Dashboard
 					</NavLink>
 				)}
-				<NavLink
-					to="/"
-					className={(isActive) => (isActive ? "mr-2 text-bold" : "mr-2")}
-				>
-					Home
-				</NavLink>
-				<NavLink
-					to="/account"
-					className={(isActive) => (isActive ? "mr-2 text-bold" : "mr-2")}
-				>
-					Account
-				</NavLink>
-				<NavLink
-					to="/report"
-					className={(isActive) => (isActive ? "mr-2 text-bold" : "mr-2")}
-				>
-					Report
-				</NavLink>
-				<NavLink
-					to="/journal"
-					className={(isActive) => (isActive ? "mr-2 text-bold" : "mr-2")}
-				>
-					Journal
-				</NavLink>
 				<Dropdown
 					direction="end"
 					// onClickOutside={(e) => console.log("e outside", e)}
@@ -88,6 +62,7 @@ export default function Header() {
 						console.log("trigger props", props)
 						return (
 							<Button
+								ref={props.ref}
 								variant="pill"
 								className="h-[2rem] mr-2"
 							>
@@ -133,7 +108,7 @@ export default function Header() {
 						return (
 							<Button
 								variant="ghost"
-								className="font-bold"
+								className="!font-bold"
 							>
 								{user?.id && `${user?.firstName} ${user?.lastName}`}{" "}
 								<ChevronDown size={11} />
@@ -154,38 +129,6 @@ export default function Header() {
 						</ul>
 					</div>
 				</Dropdown>
-				<Button
-					variant="ghost"
-					className="relative !font-bold"
-					onClick={() => setIsOpen(!isOpen)}
-				>
-					{isOpen && (
-						<div className="absolute top-full right-0 w-full bg-white shadow">
-							<ul>
-								<li>
-									<NavLink
-										to="/account"
-										className={(isActive) =>
-											isActive ? "mr-2 text-bold" : "mr-2"
-										}
-									>
-										Account
-									</NavLink>
-								</li>
-								<li>
-									<NavLink
-										to="/journal"
-										className={(isActive) =>
-											isActive ? "mr-2 text-bold" : "mr-2"
-										}
-									>
-										Journal
-									</NavLink>
-								</li>
-							</ul>
-						</div>
-					)}
-				</Button>
 			</nav>
 		</header>
 	)

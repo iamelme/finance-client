@@ -38,6 +38,7 @@ type Color = keyof typeof classes.color
 type Variant = keyof typeof classes.variant
 
 type ButtonType = {
+	ref?: React.Ref<HTMLButtonElement>
 	children: React.ReactNode
 	className?: string
 	type?: "button" | "submit" | "reset"
@@ -51,6 +52,7 @@ type ButtonType = {
 } & React.HTMLAttributes<HTMLButtonElement>
 
 export default function Button({
+	ref,
 	children,
 	className = "",
 	type = "button",
@@ -79,6 +81,7 @@ export default function Button({
 	const textColorClassName = isOutline || isGhost ? classes.outline[color] : ""
 	return (
 		<button
+			ref={ref}
 			{...rest}
 			type={type}
 			disabled={isDisabled || isLoading}
