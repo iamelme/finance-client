@@ -5,6 +5,7 @@ export default {
 		"./src/components/**/*.{html,tsx}",
 		"./src/layout/**/*.{html,tsx}",
 		"./src/ui/**/*.{html,tsx}",
+		"./src/Pages/**/*.{html,tsx}",
 	],
 	theme: {
 		extend: {
@@ -28,6 +29,16 @@ export default {
 			"3xl": "1.953rem",
 			"4xl": "2.441rem",
 			"5xl": "3.052rem",
+		},
+		keyframes: {
+			toggle: {
+				"0%": { color: "currentColor" },
+				"50%": { color: "transparent" },
+				"100%": { color: "currentColor" },
+			},
+		},
+		animation: {
+			"show-hide": "toggle 1s step-end  infinite",
 		},
 	},
 	plugins: [],
