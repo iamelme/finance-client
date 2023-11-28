@@ -105,7 +105,7 @@ export default function AccountItem() {
 							size={12}
 							strokeWidth={3}
 						/>
-						Add
+						Add new
 					</Button>
 				</div>
 			</header>

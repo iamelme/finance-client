@@ -2,7 +2,7 @@ import { NavLink } from "react-router-dom"
 
 export default function Sidebar() {
 	return (
-		<aside className="md:min-w-[23em] bg-accent border-r border-r-theme-border p-3">
+		<aside className="fixed top-0 left-0 min-h-[100vh] md:w-[290px] bg-accent border-r border-r-theme-border p-3">
 			<nav>
 				<h1>Logo</h1>
 				<NavLink

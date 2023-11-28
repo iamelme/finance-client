@@ -19,10 +19,13 @@ import AppProvider from "./context/AppContext"
 
 import Layout from "./layout/layout-w-sidebar"
 
+import ScrollToTop from "./helpers/ScrollToTop"
+
 export default function App() {
 	return (
 		<AppProvider>
 			<BrowserRouter>
+				<ScrollToTop />
 				<Layout />
 			</BrowserRouter>
 		</AppProvider>

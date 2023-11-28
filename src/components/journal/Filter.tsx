@@ -1,5 +1,5 @@
 import { Filter as FilterIcon, Plus } from "react-feather"
-import { Button, Dropdown } from "../../ui"
+import { Button, Dropdown, Switch } from "../../ui"
 import ReactDatePicker from "react-datepicker"
 import { addYears, subDays, subYears } from "date-fns"
 import { useNavigate } from "react-router-dom"
@@ -24,7 +24,7 @@ export default function Filter(props: FilterType) {
 				// onClickOutside={(e) => console.log("e outside", e)}
 				trigger={(props) => {
 					const { isOpen } = props
-					console.log("trigger props", props)
+					// console.log("trigger props", props)
 					return (
 						<Button
 							variant="outline"
@@ -45,46 +45,43 @@ export default function Filter(props: FilterType) {
 				<div className="p-3 w-[15rem]">
 					Type
 					<div>
-						<label htmlFor="revenue">
-							<input
-								type="checkbox"
-								name="type"
-								id="revenue"
-								value="Revenue"
-								checked={filter.type.includes("Revenue")}
-								onChange={(e) => {
-									onChange({
-										...filter,
-										type: e.target.checked
-											? [...filter.type, e.target.value]
-											: filter.type.filter((type) => type !== e.target.value),
-									})
-									onIsLoading(true)
-								}}
-							/>{" "}
-							Revenue
-						</label>
+						<Switch
+							type="checkbox"
+							name="type"
+							label="Revenue"
+							id="revenue"
+							value="Revenue"
+							checked={filter.type.includes("Revenue")}
+							onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+								e.stopPropagation()
+								const { checked, value } = e.target
+								onChange({
+									...filter,
+									type: checked
+										? [...filter.type, value]
+										: filter.type.filter((type) => type !== value),
+								})
+								onIsLoading(true)
+							}}
+						/>
 					</div>
-					<div>
-						<label htmlFor="expense">
-							<input
-								type="checkbox"
-								name="type"
-								id="expense"
-								value="Expense"
-								checked={filter.type.includes("Expense")}
-								onChange={(e) => {
-									onChange({
-										...filter,
-										type: e.target.checked
-											? [...filter.type, e.target.value]
-											: filter.type.filter((type) => type !== e.target.value),
-									})
-									onIsLoading(true)
-								}}
-							/>{" "}
-							Expense
-						</label>
+					<div className="mb-2">
+						<Switch
+							label="Expense"
+							id="expense"
+							value="Expense"
+							isChecked={filter.type.includes("Expense")}
+							onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+								const { checked, value } = e.target
+								onChange({
+									...filter,
+									type: checked
+										? [...filter.type, value]
+										: filter.type.filter((type) => type !== value),
+								})
+								onIsLoading(true)
+							}}
+						/>
 					</div>
 					<div className="mb-3">
 						<ReactDatePicker
@@ -135,7 +132,7 @@ export default function Filter(props: FilterType) {
 						size={11}
 						strokeWidth={3}
 					/>
-					Add
+					Add new
 				</Button>
 			</div>
 		</div>

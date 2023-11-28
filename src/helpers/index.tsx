@@ -17,13 +17,10 @@ export function parseJwt(token: string) {
 // todo add context for each formatter
 
 export function getDateFnsLocale(locale?: string) {
-	console.log("locale", locale)
 	const newLocale = locale?.replace("-", "") as keyof typeof Locales
-	console.log("newLocale ", newLocale)
 
 	const res = Locales[newLocale] ?? Locales.enUS
 
-	console.log("res", res)
 	return res
 }
 
@@ -36,7 +33,6 @@ export function DateFormatter({
 }) {
 	const context = useContext(AppContext)
 
-	console.log("value", value)
 	const { user } = context || {}
 
 	if (!value) return
@@ -66,7 +62,6 @@ export function CurrencyFormatter({ value }: { value: number }) {
 
 	const { user } = context || {}
 
-	console.log("user", user)
 	return new Intl.NumberFormat(user?.locale, {
 		style: "currency",
 		currency: user?.currency,

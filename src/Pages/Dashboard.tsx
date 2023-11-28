@@ -50,7 +50,7 @@ export default function Dashboard() {
 				<Link to="/dashboard/journal">journal</Link>
 			</div>
 			Dashboard <Link to="/">Home</Link>
-			<div>
+			<div style={{ minHeight: "200vh" }}>
 				{users?.map((user: UserType) => (
 					<div
 						key={user?.id}

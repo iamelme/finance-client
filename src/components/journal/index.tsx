@@ -8,11 +8,12 @@ import {
 	CurrencyFormatter,
 	getDateFnsLocale,
 } from "../../helpers"
-import { JournalType } from "../../types"
+import type { JournalType } from "../../types"
 import { Button, Card, CardBody, Pagination } from "../../ui"
 import { registerLocale } from "react-datepicker"
 import { AppContext } from "../../context/AppContext"
 import Filter from "./Filter"
+import Download from "./Download"
 
 export function bgType(type: string) {
 	if (type === "Revenue") return "bg-emerald-100 text-emerald-500"
@@ -137,7 +138,7 @@ export default function List() {
 		})
 	}
 
-	console.log("filter", filter)
+	// console.log("filter", filter)
 	// console.log("selected", selected)
 
 	const someAreSelected = Object.values(selected).some((v) => v)
@@ -152,6 +153,11 @@ export default function List() {
 		value === "DESC" ? "rotate-0" : "rotate-180"
 	return (
 		<>
+			<div className="flex justify-end">
+				<div className="mb-4">
+					<Download data={journals} />
+				</div>
+			</div>
 			<header className="flex justify-between my-5">
 				<h2 className="text-xl">Journal</h2>
 

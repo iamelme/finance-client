@@ -4,12 +4,14 @@ import Sidebar from "./Sidebar"
 
 export default function Dashboard() {
 	return (
-		<div className="flex flex-row min-h-screen">
+		<div className="flex  flex-row min-h-screen">
 			<Sidebar />
 
-			<div className="flex-1 content">
+			<div className="md:ml-[290px] flex-1 content">
 				<Header />
-				<Outlet />
+				<main>
+					<Outlet />
+				</main>
 			</div>
 		</div>
 	)

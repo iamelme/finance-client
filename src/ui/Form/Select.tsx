@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
 	ClassNamesConfig,
 	GroupBase,
@@ -109,7 +110,7 @@ export function Select<
 			<ReactSelect
 				unstyled={true}
 				inputId={inputId}
-				placeholder=""
+				placeholder={props.placeholder || ""}
 				{...props}
 				classNames={t(size) as ClassNamesConfig<OptionType, IsMulti, Group>}
 			/>

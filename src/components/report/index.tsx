@@ -73,7 +73,7 @@ export default function Report() {
 	const { startDate, endDate, selectedExpenseAccount, selectedRevenueAccount } =
 		filter
 
-	const [report, setReport] = useState([])
+	const [report, setReport] = useState<any>([])
 	const [groupReport, setGroupReport] = useState([])
 	const [isSubmitting, setIsSubmitting] = useState(false)
 	const [errorMessage, setErrorMessage] = useState("")
