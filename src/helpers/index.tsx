@@ -5,6 +5,7 @@ import countryList from "country-list"
 import * as Locales from "date-fns/locale"
 
 import { AppContext } from "../context/AppContext"
+import { ReportType } from "../types"
 
 export function parseJwt(token: string) {
 	try {
@@ -92,4 +93,11 @@ export function listOfCountries() {
 
 export function getCountry(code: string) {
 	return listOfCountries()?.find((country) => country?.value === code)
+}
+
+export function totalAmount(arr: ReportType[], type: string) {
+	return arr?.reduce(
+		(acc, cur) => (cur.type === type ? (acc += cur.monthly_total) : acc),
+		0
+	)
 }

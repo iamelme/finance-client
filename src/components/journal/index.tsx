@@ -213,7 +213,7 @@ export default function List() {
 									className="p-2 text-sm uppercase text-right cursor-pointer"
 									onClick={() => handleSort("amount")}
 								>
-									<span className="flex items-center">
+									<span className="inline-flex items-center">
 										<span>Amount</span>
 										{filter.sortBy === "amount" && (
 											<ChevronDown

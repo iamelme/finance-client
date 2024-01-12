@@ -19,6 +19,7 @@ import Report from "./components/report"
 import DashboardLayout from "./layout/Dashboard"
 import Dashboard from "./Pages/Dashboard"
 import Home from "./Pages/Home"
+import Users from "./components/users"
 
 export default function Routes() {
 	return (
@@ -81,6 +82,23 @@ export default function Routes() {
 							<Route
 								path=":id"
 								element={<AccountItemForm />}
+							/>
+						</Route>
+						<Route
+							path="user"
+							element={<Root />}
+						>
+							<Route
+								path=""
+								element={<Users />}
+							/>
+							<Route
+								path="add"
+								element={<Root />}
+							/>
+							<Route
+								path=":id"
+								element={<Root />}
 							/>
 						</Route>
 					</Route>

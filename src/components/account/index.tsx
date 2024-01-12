@@ -132,6 +132,7 @@ export default function AccountItem() {
 									<td className="p-2  border-t border-t-theme-border">
 										<input
 											type="checkbox"
+											checked={selected[item.id] || false}
 											onChange={(e) =>
 												setSelected({
 													...selected,

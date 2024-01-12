@@ -2,39 +2,11 @@ import { useEffect, useRef, useState } from "react"
 import * as d3 from "d3"
 import useAxios from "../../hooks/useAxios"
 
-// import { Button, DatePickerWrapper, Dropdown, Select } from "../../ui"
-// import ReactDatePicker from "react-datepicker"
-// import {
-// 	startOfMonth,
-// 	endOfMonth,
-// 	startOfQuarter,
-// 	endOfQuarter,
-// 	endOfYear,
-// 	startOfYear,
-// 	isSameDay,
-// } from "date-fns"
-// import { DateFormatter } from "../../helpers"
-// import { Calendar } from "react-feather"
 import Filter, { FilterType } from "./Filter"
-import { CurrencyFormatter } from "../../helpers"
+import { CurrencyFormatter, totalAmount } from "../../helpers"
 import { Card, CardBody } from "../../ui"
+import { ReportType } from "../../types"
 
-const highestAmount = (groupReport) =>
-	Object.keys(groupReport)?.reduce((acc, key) => {
-		const month = groupReport[key]?.reduce((innerAcc, innerCur) => {
-			if (innerAcc < +innerCur.monthly_total) {
-				innerAcc = +innerCur.monthly_total
-			}
-
-			return innerAcc
-		}, 0)
-
-		if (acc < month) {
-			acc = month
-		}
-
-		return acc
-	}, 0)
 const monthOptions = [
 	"Jan",
 	"Feb",
@@ -55,9 +27,6 @@ const margin = { top: 30, right: 20, bottom: 30, left: 50 },
 	height = 500 - margin.top - margin.bottom
 
 export default function Report() {
-	// const [startDate, setStartDate] = useState<Date | null>(null)
-	// const [endDate, setEndDate] = useState<Date | null>(null)
-
 	const refSvg = useRef<SVGSVGElement | null>(null)
 	const refReportJournal = useRef<SVGSVGElement | null>(null)
 
@@ -73,10 +42,7 @@ export default function Report() {
 	const { startDate, endDate, selectedExpenseAccount, selectedRevenueAccount } =
 		filter
 
-	const [report, setReport] = useState<any>([])
-	const [groupReport, setGroupReport] = useState([])
-	const [isSubmitting, setIsSubmitting] = useState(false)
-	const [errorMessage, setErrorMessage] = useState("")
+	const [report, setReport] = useState<Array<ReportType & { id: string }>>([])
 
 	const ax = useAxios()
 
@@ -98,27 +64,17 @@ export default function Report() {
 			})
 
 			console.log("report res", res.data)
-			setReport(res.data?.map((d, idx) => ({ ...d, id: idx + 1 })))
-
-			// const group = res?.data?.reduce((acc, cur, idx: number) => {
-			// 	if (!acc[cur.year]) {
-			// 		acc[cur.year] = [{ ...cur, id: idx }]
-			// 	} else {
-			// 		acc[cur.year].push({
-			// 			...cur,
-			// 			id: idx,
-			// 		})
-			// 	}
-
-			// 	return acc
-			// }, {})
-			// setGroupReport(group)
+			setReport(
+				res.data?.map((d: ReportType, idx: number) => ({
+					...d,
+					monthly_total: +d.monthly_total,
+					id: idx + 1,
+				}))
+			)
 		} catch (e) {
 			console.error(e)
 		}
 	}
-
-	// console.log({ groupReport })
 
 	const group = d3.select(refGroup.current)
 
@@ -148,13 +104,7 @@ export default function Report() {
 
 	useEffect(() => {
 		if (report.length && refReportJournal.current) {
-			const {
-				svg,
-				x,
-				xAxis,
-				y,
-				yAxis,
-			}: { svg: unknown; x: any; xAxis: any; y: any; yAxis: any } =
+			const { x, xAxis, y, yAxis }: { x: any; xAxis: any; y: any; yAxis: any } =
 				refReportJournal.current
 
 			x.domain(report.map((d) => d.year))
@@ -189,7 +139,7 @@ export default function Report() {
 				.attr("x", (d) => margin.left + x(d.year) + xSubGroup(d.id))
 				.attr("y", (d) => y(+d.monthly_total))
 
-				.attr("width", (d) => xSubGroup.bandwidth())
+				.attr("width", () => xSubGroup.bandwidth())
 				.attr("height", (d) => height - margin.bottom - y(+d.monthly_total))
 				.attr("transform", `translate(${0}, ${margin.bottom})`)
 				.attr("fill", (d) => (d.type === "Revenue" ? "#bbf7d0" : "#fecaca"))
@@ -210,107 +160,11 @@ export default function Report() {
 						})`
 				)
 				.attr("fill", (d) => (d.type === "Revenue" ? "#166534" : "#991b1b"))
-				.style("font-size", (d) => (report?.length > 10 ? 10 : 12))
+				.style("font-size", () => (report?.length > 10 ? 10 : 12))
 
 			update.exit().remove()
-
-			// const bar = svg.selectAll("g.top-g").data(report)
-
-			// const enter = bar.enter().append("g").attr("class", "bars-container")
-
-			// enter
-			// 	.append("rect")
-			// 	.attr("x", (d) => x(d.year) + xSubGroup(d.id))
-			// 	.attr("y", (d) => y(+d.monthly_total))
-
-			// 	.attr("width", (d) => xSubGroup.bandwidth())
-			// 	.attr("height", (d) => height - margin.bottom - y(+d.monthly_total))
-			// 	.attr("transform", `translate(${0}, ${margin.bottom})`)
-			// 	.attr("fill", (d) => (d.type === "Revenue" ? "#bbf7d0" : "#fecaca"))
-
-			// enter
-			// 	.append("text")
-			// 	.text((d) => {
-			// 		console.log("data text ", d)
-			// 		return monthOptions[d.month - 1]
-			// 	})
-			// 	.attr("x", (d) => x(d.year) + xSubGroup(d.id))
-			// 	.attr("y", height + margin.bottom)
-			// 	.attr(
-			// 		"transform",
-			// 		(d) =>
-			// 			`rotate(45, ${x(d.year) + xSubGroup(d.id)}, ${
-			// 				height + margin.bottom
-			// 			})`
-			// 	)
-			// 	.attr("fill", (d) => (d.type === "Revenue" ? "#166534" : "#991b1b"))
-
-			// // bar.selectAll("g.bars-container").exit().remove()
-			// bar.exit().remove()
-			// bar.exit().remove()
-
-			// const x1 = d3
-			// 	.scaleBand()
-			// 	.range([0, x.bandwidth()])
-			// 	.domain(report.map((d) => d.month))
-			// 	.padding(0.1)
-			// svg
-			// 	.append("g")
-			// 	.selectAll("text")
-			// 	.data(report)
-			// 	.join("text")
-			// 	.text((d) => monthOptions[d.month - 1])
-			// 	.attr("x", (d) => x(d.year) + x1(d.month))
-			// 	.attr("y", (d) => height)
-			// 	// .attr("transform", `translate(${0}, ${height + margin.bottom})`)
-			// 	.transition()
-			// 	.duration(1000)
 		}
 	}, [report])
-
-	// useEffect(() => {
-	// 	if (report.length && refReportJournal.current) {
-	// 		const {
-	// 			svg,
-	// 			x,
-	// 			xAxis,
-	// 			y,
-	// 			yAxis,
-	// 		}: { svg: unknown; x: any; xAxis: any; y: any; yAxis: any } =
-	// 			refReportJournal.current
-
-	// 		x.domain(report?.map((d) => d.year))
-	// 		// x.domain(report?.map((d) => monthOptions[d.month - 1]))
-	// 		xAxis.transition().duration(1000).call(d3.axisBottom(x).tickSizeOuter(0))
-
-	// 		y.domain([0, d3.max(report, (d) => +d.monthly_total)])
-	// 		yAxis
-	// 			.transition()
-	// 			.duration(1000)
-	// 			.call(
-	// 				d3
-	// 					.axisLeft(y)
-	// 					.tickFormat((d) => `$${d}`)
-	// 					.tickSizeOuter(0)
-	// 			)
-	// 		const bars = svg.selectAll("rect").data(report)
-
-	// 		bars
-	// 			.join("rect")
-	// 			.attr("x", (d) => x(d.year))
-	// 			// .attr("x", (d) => x(monthOptions[d.month - 1]))
-	// 			.attr("y", (d) => y(+d.monthly_total))
-	// 			.attr("width", x.bandwidth())
-	// 			.attr("height", (d) =>
-	// 				d.monthly_total <= 0 ? 0 : height - margin.bottom - y(d.monthly_total)
-	// 			)
-	// 			// .transition()
-	// 			// .duration(1000)
-	// 			.attr("transform", `translate(${0}, ${margin.bottom})`)
-	// 			.attr("fill", (d) => (d.type === "Expense" ? "red" : "green"))
-	// 		bars.exit().remove()
-	// 	}
-	// }, [report])
 
 	useEffect(() => {
 		if (startDate && endDate) {
@@ -340,31 +194,48 @@ export default function Report() {
 
 			<div className="flex">
 				<div className="flex-1">
-					{report?.map((report, idx) => {
+					{report?.map((report, idx: number) => {
 						if (report.type === "Revenue")
 							return (
 								<div key={idx}>
-									<div>
-										{monthOptions[report.month - 1]} {report.year} -
-										<CurrencyFormatter value={report.monthly_total} />
+									<div className="flex justify-between mb-2 px-2">
+										<span>
+											{monthOptions[report.month - 1]} {report.year}
+										</span>
+										<span>
+											<CurrencyFormatter value={report.monthly_total} />
+										</span>
 									</div>
-									<div></div>
 								</div>
 							)
 					})}
+					<div className="text-right mb-2 p-2 border-t ">
+						<strong>
+							<CurrencyFormatter value={totalAmount(report, "Revenue")} />
+						</strong>
+					</div>
 				</div>
 				<div className="flex-1">
-					{report?.map((report, idx) => {
+					{report?.map((report, idx: number) => {
 						if (report.type === "Expense")
 							return (
 								<div key={idx}>
-									<div>
-										{monthOptions[report.month - 1]} {report.year} -
-										<CurrencyFormatter value={report.monthly_total} />
+									<div className="flex justify-between mb-2 px-2">
+										<span>
+											{monthOptions[report.month - 1]} {report.year}
+										</span>
+										<span>
+											<CurrencyFormatter value={report.monthly_total} />
+										</span>
 									</div>
 								</div>
 							)
 					})}
+					<div className="text-right mb-2 p-2 border-t ">
+						<strong>
+							<CurrencyFormatter value={totalAmount(report, "Expense")} />
+						</strong>
+					</div>
 				</div>
 			</div>
 		</>

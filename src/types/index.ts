@@ -18,6 +18,7 @@ export type JournalType = {
 
 export type UserType = {
 	id: string
+	created_at: string
 	first_name: string
 	last_name: string
 	email: string
@@ -33,4 +34,11 @@ export type ErrorType = FieldErrors<any>
 	errors: FieldErrors<any>
 	// | Partial<DeepMap<Record<string, unknown>, FieldError>>
 	// | FieldErrors<any>
+}
+
+export type ReportType = {
+	type: string
+	monthly_total: number
+	year: number
+	month: number
 }
